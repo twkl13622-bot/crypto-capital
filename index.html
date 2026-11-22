@@ -2,102 +2,117 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>درگاه واریز تتر</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Capital</title>
 <style>
 body {
-  background:#101827;
+  margin:0;
+  background:#0b1020;
   color:white;
   font-family:Tahoma,Arial;
+}
+header {
+  background:#141d33;
+  padding:25px;
   text-align:center;
-  padding:25px 12px;
+  color:#f0bd55;
+  font-size:25px;
+  font-weight:bold;
+}
+.container {
+  max-width:750px;
+  margin:25px auto;
+  padding:15px;
 }
 .box {
-  max-width:500px;
-  margin:30px auto;
-  padding:25px;
-  background:#1b293d;
-  border-radius:18px;
+  background:#141d33;
+  border:1px solid #263451;
+  border-radius:15px;
+  padding:22px;
+  margin-bottom:18px;
 }
-h2 {color:#2bd397}
+h2 {color:#f0bd55}
+p {line-height:2;color:#cbd5e1}
 .address {
   direction:ltr;
-  word-break:break-all;
-  background:#0b1422;
-  padding:18px;
+  text-align:center;
+  background:#080e1c;
+  padding:15px;
   border-radius:10px;
-  font-size:14px;
+  overflow-wrap:anywhere;
+  font-size:13px;
 }
 button {
-  width:100%;
-  padding:15px;
-  background:#2bd397;
+  background:#f0bd55;
+  color:#111;
   border:0;
-  border-radius:10px;
-  font-size:16px;
+  border-radius:8px;
+  padding:13px 20px;
   font-weight:bold;
+  cursor:pointer;
   margin-top:12px;
 }
-.info {
-  color:#b8c5d5;
-  line-height:2;
+.notice {
+  color:#ffd98a;
+  font-size:12px;
 }
 </style>
 </head>
 <body>
 
+<header>CRYPTO CAPITAL</header>
+
+<div class="container">
+
 <div class="box">
+<h2>به Crypto Capital خوش آمدید</h2>
+<p>
+سامانه نمایش اطلاعات واریز ارز دیجیتال
+</p>
+</div>
 
-<h2>درگاه واریز USDT</h2>
-
-<p class="info">شبکه پرداخت: BNB Smart Chain (BEP20)</p>
-
-<h3>آدرس کیف پول دریافت</h3>
+<div class="box">
+<h2>واریز USDT</h2>
+<p>شبکه انتخابی: BNB Smart Chain (BEP20)</p>
 
 <div class="address" id="wallet">
 0x3ceaa206e71b3a03d7596be8c9214e36361aae11
 </div>
 
 <button onclick="copyWallet()">کپی آدرس کیف پول</button>
-
 <p id="message"></p>
 
-<hr>
-
-<h3>مراحل واریز</h3>
-
-<p class="info">
-1. وارد Trust Wallet شوید.<br>
-2. ارز USDT را انتخاب کنید.<br>
-3. شبکه BEP20 را انتخاب کنید.<br>
-4. آدرس بالا را وارد کنید.<br>
-5. قبل از انتقال، آدرس و شبکه را بررسی کنید.
+<p class="notice">
+فقط تتر BEP20 ارسال کنید. قبل از انتقال، آدرس و شبکه را بررسی کنید.
 </p>
+</div>
 
-<p style="color:#ffcc80;font-size:13px">
-انتقال روی شبکه اشتباه ممکن است باعث از دست رفتن دارایی شود.
-</p>
+<div class="box">
+<h2>داشبورد کاربر</h2>
+<p>موجودی حساب: هنوز متصل نشده</p>
+<p>تاریخچه تراکنش‌ها: هنوز فعال نشده</p>
+<p>درخواست برداشت: هنوز فعال نشده</p>
+</div>
 
-<p style="color:#aab6c8;font-size:12px">
-این صفحه فقط آدرس پرداخت را نمایش می‌دهد و واریز را خودکار تأیید نمی‌کند.
+<div class="box">
+<h2>امنیت حساب</h2>
+<p>
+برای فعال‌سازی حساب کاربران، ثبت تراکنش‌ها و برداشت واقعی، اتصال به سرور امن و پایگاه داده لازم است.
 </p>
+</div>
 
 </div>
 
 <script>
 function copyWallet() {
-  const address = "0x3ceaa206e71b3a03d7596be8c9214e36361aae11";
-  navigator.clipboard.writeText(address).then(() => {
-    document.getElementById("message").innerText =
-      "آدرس با موفقیت کپی شد";
-  }).catch(() => {
-    document.getElementById("message").innerText =
-      "آدرس را لمس کنید و دستی کپی کنید";
-  });
+ const address = document.getElementById("wallet").innerText.trim();
+ navigator.clipboard.writeText(address).then(function() {
+   document.getElementById("message").innerText = "آدرس کپی شد";
+ }).catch(function() {
+   document.getElementById("message").innerText = "لطفاً آدرس را دستی کپی کنید";
+ });
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="auth.js"></script>
+
 </body>
 </html>
