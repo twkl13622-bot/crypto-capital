@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود و ثبت نام</title>
+
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: #101827;
+      color: white;
+      text-align: center;
+      padding: 25px;
+    }
+
+    .box {
+      background: #1e293b;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+    }
+
+    input {
+      width: 90%;
+      padding: 13px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 95%;
+      padding: 13px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #16a34a;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .login {
+      background: #2563eb;
+    }
+
+    #status {
+      margin-top: 15px;
+      color: #facc15;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>حساب کاربری</h2>
+
+    <input type="email" id="email" placeholder="ایمیل شما">
+
+    <input type="password" id="password" placeholder="رمز عبور">
+
+    <button onclick="register()">ثبت نام</button>
+
+    <button class="login" onclick="login()">ورود به حساب</button>
+
+    <button onclick="logout()">خروج از حساب</button>
+
+    <p id="status"></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    async function register() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || password.length < 6) {
+        alert("ایمیل را وارد کنید و رمز عبور حداقل ۶ کاراکتر باشد.");
+        return;
+      }
+
+      await registerUser(email, password);
+    }
+
+    async function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("ایمیل و رمز عبور را وارد کنید.");
+        return;
+      }
+
+      await loginUser(email, password);
+    }
+
+    async function logout() {
+      await logoutUser();
+    }
+  </script>
+
+</body>
+</html>
