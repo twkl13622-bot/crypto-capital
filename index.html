@@ -1,13 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>USDT Growth — BEP20</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>درگاه واریز تتر</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#07111f,#12223a);font-family:Tahoma,Arial,sans-serif;color:#fff}.card{width:min(720px,100%);background:#111c30;border:1px solid #2b3d5d;border-radius:24px;padding:28px;box-shadow:0 25px 80px #0007}.top{text-align:center}.top h1{font-size:34px;margin:0 0 8px}.muted{color:#9eabc2;line-height:1.9}.badge{display:inline-block;margin-top:10px;padding:7px 13px;border-radius:99px;background:#123b30;color:#6ee5ad;font-size:13px}.box{margin-top:22px;background:#0a1425;border:1px solid #263653;border-radius:18px;padding:20px}.address{direction:ltr;text-align:left;word-break:break-all;background:#050b14;padding:15px;border-radius:12px;font:13px monospace;line-height:1.7;margin:12px 0}button{width:100%;padding:14px;border:0;border-radius:12px;background:#35d399;color:#03140d;font-weight:700;font-size:15px;cursor:pointer}.status{color:#70e6b2;font-size:13px;margin-top:12px}.notice{margin-top:20px;padding:14px;border-radius:12px;background:#211b0d;color:#e6c66e;font-size:13px;line-height:1.9}
-</style></head>
-<body><main class="card"><div class="top"><h1>USDT Growth</h1><div class="muted">دریافت USDT روی شبکه BNB Smart Chain</div><span class="badge">USDT • BEP20</span></div>
-<section 0x3ceaa206e71b3a03d7596be8c9214e36361aae11</div><button onclick="copyAddress()">کپی آدرس</button><div id="status" class="status"></div></section>
-<div class="notice"><b>توجه:</b> قبل از ارسال، شبکه BEP20 و آدرس مقصد را بررسی کنید. این صفحه فقط برای دریافت و نمایش آدرس است و سود تضمینی ارائه نمی‌کند.</div></main>
-<script>function copyAddress(){const a=document.getElementById('wallet').textContent.trim();navigator.clipboard.writeText(a).then(()=>document.getElementById('status').textContent='آدرس کپی شد.').catch(()=>document.getElementById('status').textContent='کپی خودکار انجام نشد؛ آدرس را دستی کپی کنید.');}</script>
-</body></html>
+body {
+  background:#101827;
+  color:white;
+  font-family:Tahoma,Arial;
+  text-align:center;
+  padding:25px 12px;
+}
+.box {
+  max-width:500px;
+  margin:30px auto;
+  padding:25px;
+  background:#1b293d;
+  border-radius:18px;
+}
+h2 {color:#2bd397}
+.address {
+  direction:ltr;
+  word-break:break-all;
+  background:#0b1422;
+  padding:18px;
+  border-radius:10px;
+  font-size:14px;
+}
+button {
+  width:100%;
+  padding:15px;
+  background:#2bd397;
+  border:0;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  margin-top:12px;
+}
+.info {
+  color:#b8c5d5;
+  line-height:2;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+<h2>درگاه واریز USDT</h2>
+
+<p class="info">شبکه پرداخت: BNB Smart Chain (BEP20)</p>
+
+<h3>آدرس کیف پول دریافت</h3>
+
+<div class="address" id="wallet">
+0x3ceaa206e71b3a03d7596be8c9214e36361aae11
+</div>
+
+<button onclick="copyWallet()">کپی آدرس کیف پول</button>
+
+<p id="message"></p>
+
+<hr>
+
+<h3>مراحل واریز</h3>
+
+<p class="info">
+1. وارد Trust Wallet شوید.<br>
+2. ارز USDT را انتخاب کنید.<br>
+3. شبکه BEP20 را انتخاب کنید.<br>
+4. آدرس بالا را وارد کنید.<br>
+5. قبل از انتقال، آدرس و شبکه را بررسی کنید.
+</p>
+
+<p style="color:#ffcc80;font-size:13px">
+انتقال روی شبکه اشتباه ممکن است باعث از دست رفتن دارایی شود.
+</p>
+
+<p style="color:#aab6c8;font-size:12px">
+این صفحه فقط آدرس پرداخت را نمایش می‌دهد و واریز را خودکار تأیید نمی‌کند.
+</p>
+
+</div>
+
+<script>
+function copyWallet() {
+  const address = "0x3ceaa206e71b3a03d7596be8c9214e36361aae11";
+  navigator.clipboard.writeText(address).then(() => {
+    document.getElementById("message").innerText =
+      "آدرس با موفقیت کپی شد";
+  }).catch(() => {
+    document.getElementById("message").innerText =
+      "آدرس را لمس کنید و دستی کپی کنید";
+  });
+}
+</script>
+
+</body>
+</html>
