@@ -1,762 +1,330 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Crypto Platform</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Capital</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
---bg:#0b1220;
---panel:#121d30;
---panel2:#18263d;
---text:#edf3ff;
---muted:#9fb0ca;
---line:#263852;
---accent:#35c69a;
---danger:#ff6b78;
-}
 *{box-sizing:border-box}
 body{
 margin:0;
-background:var(--bg);
-color:var(--text);
-font-family:Tahoma,Arial,sans-serif
+background:#0b1220;
+color:white;
+font-family:Tahoma,Arial;
 }
-.wrap{max-width:1120px;margin:auto;padding:22px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-h1,h2,h3{margin:0 0 14px}
-.muted{color:var(--muted);font-size:13px;line-height:1.8}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
-input,button,select{
-font:inherit;border-radius:10px;padding:12px;width:100%;
-border:1px solid var(--line);background:var(--panel2);
-color:var(--text);margin:6px 0
+header{
+background:#111c30;
+padding:20px;
+text-align:center;
+font-size:23px;
+color:#39d98a;
+font-weight:bold;
 }
-button{background:var(--accent);color:#06251c;border:0;font-weight:bold;cursor:pointer}
-button.secondary{background:#263852;color:var(--text)}
-button.danger{background:var(--danger);color:#30090d}
-.hidden{display:none!important}
-.stat{font-size:26px;font-weight:bold;margin-top:6px;direction:ltr;text-align:right}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#20344d;color:#b9d4f5;font-size:12px}
-.tablewrap{overflow:auto}
-table{border-collapse:collapse;width:100%;min-width:560px}
-th,td{text-align:right;padding:10px;border-bottom:1px solid var(--line);font-size:13px}
-th{color:var(--muted)}
-.notice{padding:12px;border-radius:10px;background:#342d18;color:#ffe6a2;margin:10px 0;font-size:13px;line-height:1.8}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.tabs button{width:auto;padding:9px 14px}
-.addr{direction:ltr;overflow-wrap:anywhere;background:#0a1424;padding:10px;border-radius:9px;font-size:12px}
-label{display:block;color:var(--muted);font-size:13px;margin-top:8px}
-@media(max-width:600px){
-.wrap{padding:12px}
-.card{padding:14px}
+.container{
+max-width:600px;
+margin:20px auto;
+padding:15px;
 }
+.box{
+background:#17243a;
+padding:20px;
+border-radius:14px;
+margin-bottom:15px;
+}
+h3{color:#39d98a}
+input,button{
+width:100%;
+padding:14px;
+margin:7px 0;
+border:0;
+border-radius:8px;
+font-size:15px;
+}
+input{background:#26364e;color:white}
+button{
+background:#16a36a;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+.secondary{background:#30445f}
+.danger{background:#bd4141}
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+.hidden{display:none}
+.balance{
+font-size:30px;
+color:#39d98a;
+text-align:center;
+padding:15px;
+}
+small{color:#aab9ca}
 </style>
 </head>
 
 <body>
-<div class="wrap">
 
-<header class="top">
-<div>
-<h1>Crypto Platform</h1>
-<div class="muted">مدیریت حساب و تراکنش‌های USDT</div>
-</div>
-<div id="userbar" class="hidden">
-<span id="who" class="pill"></span>
-<button class="secondary" style="width:auto" id="logout">خروج</button>
-</div>
-</header>
+<header>CRYPTO CAPITAL</header>
 
-<section id="auth" class="grid">
+<div class="container">
 
-<div class="card">
-<h2>ورود</h2>
-<label>ایمیل</label>
-<input id="loginEmail" type="email">
-<label>رمز عبور</label>
-<input id="loginPass" type="password">
-<button id="loginBtn">ورود به حساب</button>
+<div id="auth" class="box">
+<h3>ورود به حساب</h3>
+<input id="email" type="email" placeholder="ایمیل">
+<input id="password" type="password" placeholder="رمز عبور">
+<button onclick="login()">ورود</button>
+<button class="secondary" onclick="register()">ثبت نام</button>
 </div>
 
-<div class="card">
-<h2>ثبت‌نام</h2>
-<label>ایمیل</label>
-<input id="signupEmail" type="email">
-<label>رمز عبور</label>
-<input id="signupPass" type="password">
-<button id="signupBtn">ایجاد حساب</button>
+<div id="dashboard" class="hidden">
+
+<div class="box">
+<h3>داشبورد کاربری</h3>
+<div id="userEmail"></div>
+<div class="balance">
+$<span id="balance">0</span>
+</div>
+<p style="text-align:center">موجودی حساب</p>
 </div>
 
-</section>
-
-<main id="app" class="hidden">
-
-<div id="message" class="notice hidden"></div>
-
-<div class="grid">
-
-<div class="card">
-<div class="muted">موجودی ثبت‌شده (USDT)</div>
-<div class="stat" id="balance">—</div>
-<div class="muted">موجودی از دیتابیس خوانده می‌شود.</div>
+<div class="box menu">
+<button onclick="showPage('deposit')">واریز</button>
+<button onclick="showPage('withdraw')">برداشت</button>
+<button onclick="showPage('profit')">سود روزانه</button>
+<button onclick="showPage('profile')">پروفایل</button>
 </div>
 
-<div class="card">
-<div class="muted">شبکه</div>
-<div class="stat" style="font-size:20px">BEP20</div>
-<div class="muted">BNB Smart Chain · USDT</div>
+<div id="deposit" class="box hidden">
+<h3>واریز USDT - شبکه BEP20</h3>
+<p>آدرس کیف پول:</p>
+<input id="wallet" readonly value="0x3ceaa206e71b3a03d7596be8c9214e36361aae11">
+<button onclick="copyWallet()">کپی آدرس</button>
+<hr>
+<input id="depositAmount" type="number" placeholder="مبلغ واریز USDT">
+<input id="txHash" placeholder="شناسه تراکنش TXID">
+<button onclick="sendDeposit()">ثبت درخواست واریز</button>
+<small>پس از ارسال تراکنش، درخواست شما برای بررسی ثبت می‌شود.</small>
 </div>
 
-<div class="card">
-<div class="muted">حساب</div>
-<div id="profileInfo" class="muted">در حال دریافت اطلاعات…</div>
+<div id="withdraw" class="box hidden">
+<h3>درخواست برداشت</h3>
+<input id="withdrawAmount" type="number" placeholder="مبلغ برداشت">
+<input id="withdrawAddress" placeholder="آدرس کیف پول BEP20">
+<button onclick="sendWithdraw()">ثبت درخواست برداشت</button>
+</div>
+
+<div id="profit" class="box hidden">
+<h3>گزارش سود روزانه</h3>
+<div id="profitList">در حال دریافت اطلاعات...</div>
+</div>
+
+<div id="profile" class="box hidden">
+<h3>پروفایل</h3>
+<p id="profileEmail"></p>
+<button class="danger" onclick="logout()">خروج از حساب</button>
+</div>
+
+<div class="box">
+<h3>وضعیت درخواست‌ها</h3>
+<div id="history">در حال بارگذاری...</div>
 </div>
 
 </div>
-
-<div class="tabs">
-<button class="secondary" data-tab="depositPanel">واریز</button>
-<button class="secondary" data-tab="withdrawPanel">برداشت</button>
-<button class="secondary" data-tab="historyPanel">تاریخچه</button>
-<button class="secondary hidden" id="adminTab" data-tab="adminPanel">مدیریت</button>
-</div>
-
-<section id="depositPanel" class="card">
-
-<h2>واریز USDT روی BEP20</h2>
-
-<p class="muted">
-فقط USDT روی شبکه BNB Smart Chain (BEP20) ارسال کنید.
-</p>
-
-<div class="addr" id="wallet">
-0x3ceaa206e71b3a03d7596be8c9214e36361aae11
-</div>
-
-<button class="secondary" id="copyWallet">کپی آدرس کیف پول</button>
-
-<label>مبلغ واریزی (USDT)</label>
-<input id="depAmount" type="number" min="0.01" step="0.01">
-
-<label>هش تراکنش</label>
-<input id="depHash" type="text" placeholder="0x...">
-
-<button id="depositBtn">ثبت درخواست واریز</button>
-
-<p class="muted">
-ثبت هش به‌تنهایی به معنی تأیید و افزایش موجودی نیست.
-واریز باید روی بلاکچین بررسی شود.
-</p>
-
-</section>
-
-<section id="withdrawPanel" class="card hidden">
-
-<h2>درخواست برداشت</h2>
-
-<div class="notice">
-درخواست برداشت پس از بررسی و تأیید مدیر پردازش می‌شود.
-</div>
-
-<label>مبلغ برداشت (USDT)</label>
-<input id="wdAmount" type="number" min="0.01" step="0.01">
-
-<label>آدرس مقصد BEP20</label>
-<input id="wdAddress" type="text" placeholder="0x...">
-
-<button id="withdrawBtn">ثبت درخواست برداشت</button>
-
-</section>
-
-<section id="historyPanel" class="card hidden">
-
-<h2>تاریخچه واریزها</h2>
-
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>مبلغ</th>
-<th>هش تراکنش</th>
-<th>وضعیت</th>
-<th>تاریخ</th>
-</tr>
-</thead>
-<tbody id="depositsRows"></tbody>
-</table>
-</div>
-
-<h2 style="margin-top:24px">تاریخچه برداشت‌ها</h2>
-
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>مبلغ</th>
-<th>آدرس مقصد</th>
-<th>وضعیت</th>
-<th>تاریخ</th>
-</tr>
-</thead>
-<tbody id="withdrawalsRows"></tbody>
-</table>
-</div>
-
-</section>
-
-<section id="adminPanel" class="card hidden">
-
-<h2>پنل مدیریت</h2>
-
-<div class="notice">
-عملیات مدیریتی باید با مجوزهای امن دیتابیس و سمت سرور محافظت شوند.
-</div>
-
-<button class="secondary" id="refreshAdmin">بارگذاری مجدد</button>
-
-<h3>درخواست‌های واریز</h3>
-
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>کاربر</th>
-<th>مبلغ</th>
-<th>هش</th>
-<th>وضعیت</th>
-</tr>
-</thead>
-<tbody id="adminDeposits"></tbody>
-</table>
-</div>
-
-<h3 style="margin-top:22px">درخواست‌های برداشت</h3>
-
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>کاربر</th>
-<th>مبلغ</th>
-<th>مقصد</th>
-<th>وضعیت</th>
-</tr>
-</thead>
-<tbody id="adminWithdrawals"></tbody>
-</table>
-</div>
-
-</section>
-
-</main>
-
-<footer class="muted" style="text-align:center;margin:24px 0">
-Crypto Platform
-</footer>
-
 </div>
 
 <script>
-(() => {
-
 const SUPABASE_URL =
 'https://ofyiqwcfweowaszkddts.supabase.co';
 
-const SUPABASE_ANON_KEY =
+const SUPABASE_KEY =
 'sb_publishable_IbUYLvU5yRclImSaMvhwNQ__78E2TbT';
 
-const ADMIN_EMAIL =
-'twkl13622@gmail.com';
-
-const WALLET =
-'0x3ceaa206e71b3a03d7596be8c9214e36361aae11';
-
-const TABLES = {
-profiles:'profiles',
-deposits:'deposits',
-withdrawals:'withdrawals'
-};
-
-const sb = window.supabase.createClient(
+const db = supabase.createClient(
 SUPABASE_URL,
-SUPABASE_ANON_KEY
+SUPABASE_KEY
 );
 
-const $ = id => document.getElementById(id);
-
 let currentUser = null;
-let isAdmin = false;
-let profile = null;
 
-function msg(text,bad=false){
+async function login(){
+const email=document.getElementById('email').value;
+const password=document.getElementById('password').value;
 
-$('message').textContent=text;
-
-$('message').classList.remove('hidden');
-
-$('message').style.background =
-bad ? '#3a1d27' : '#342d18';
-
-$('message').style.color =
-bad ? '#ffc0c7' : '#ffe6a2';
-
-}
-
-function clearMsg(){
-$('message').classList.add('hidden');
-}
-
-function money(v){
-
-const n=Number(v);
-
-return Number.isFinite(n)
-? n.toLocaleString('en-US',{maximumFractionDigits:8})
-: '—';
-
-}
-
-function date(v){
-
-return v
-? new Date(v).toLocaleString('fa-IR')
-: '—';
-
-}
-
-function row(target,values){
-
-const tr=document.createElement('tr');
-
-values.forEach(v=>{
-
-const td=document.createElement('td');
-
-td.textContent=v==null?'':String(v);
-
-tr.appendChild(td);
-
+const {data,error}=await db.auth.signInWithPassword({
+email,password
 });
 
-target.appendChild(tr);
+if(error)return alert(error.message);
 
+currentUser=data.user;
+await start();
 }
 
-function showTab(id){
+async function register(){
+const email=document.getElementById('email').value;
+const password=document.getElementById('password').value;
 
-[
-'depositPanel',
-'withdrawPanel',
-'historyPanel',
-'adminPanel'
-].forEach(x=>{
-
-$(x).classList.toggle('hidden',x!==id);
-
+const {data,error}=await db.auth.signUp({
+email,password
 });
 
+if(error)return alert(error.message);
+
+alert('ثبت نام انجام شد. در صورت فعال بودن تأیید ایمیل، ایمیل خود را تأیید کنید.');
 }
 
-document.querySelectorAll('[data-tab]').forEach(b=>{
+async function start(){
+document.getElementById('auth').classList.add('hidden');
+document.getElementById('dashboard').classList.remove('hidden');
 
-b.addEventListener('click',()=>showTab(b.dataset.tab));
+document.getElementById('userEmail').innerText=currentUser.email;
+document.getElementById('profileEmail').innerText=currentUser.email;
 
-});
+await loadBalance();
+await loadHistory();
+await loadProfit();
+}
 
-$('wallet').textContent=WALLET;
-
-async function loadProfile(){
-
-const {data,error}=await sb
-.from(TABLES.profiles)
-.select('*')
+async function loadBalance(){
+const {data,error}=await db
+.from('profiles')
+.select('balance')
 .eq('id',currentUser.id)
 .maybeSingle();
 
-if(error) throw error;
+if(!error && data){
+document.getElementById('balance').innerText=data.balance ?? 0;
+}
+}
 
-profile=data;
+async function sendDeposit(){
+const amount=Number(document.getElementById('depositAmount').value);
+const tx=document.getElementById('txHash').value.trim();
 
-const possibleBalance=[
-'balance',
-'usdt_balance',
-'wallet_balance',
-'available_balance'
-];
+if(amount<=0 || !tx)return alert('اطلاعات را کامل وارد کنید');
 
-const found=profile
-? possibleBalance.find(k=>profile[k]!==undefined && profile[k]!==null)
-: null;
+const {error}=await db.from('deposits').insert({
+user_id:currentUser.id,
+amount:amount,
+asset:'USDT',
+tx_hash:tx,
+status:'pending'
+});
 
-$('balance').textContent=
-found ? money(profile[found]) : '—';
+if(error)return alert(error.message);
 
-$('profileInfo').textContent=profile
-? `شناسه: ${currentUser.id} · ایمیل: ${currentUser.email}`
-: `ایمیل: ${currentUser.email} · رکورد پروفایل پیدا نشد.`;
+alert('درخواست واریز ثبت شد.');
+await loadHistory();
+}
 
+async function sendWithdraw(){
+const amount=Number(document.getElementById('withdrawAmount').value);
+const address=document.getElementById('withdrawAddress').value.trim();
+
+if(amount<=0 || !address)return alert('اطلاعات را کامل وارد کنید');
+
+const {data:profile,error:profileError}=await db
+.from('profiles')
+.select('balance')
+.eq('id',currentUser.id)
+.single();
+
+if(profileError)return alert(profileError.message);
+
+if(amount>Number(profile.balance))
+return alert('موجودی کافی نیست');
+
+const {error}=await db.from('withdrawals').insert({
+user_id:currentUser.id,
+amount:amount,
+asset:'USDT',
+wallet_address:address,
+status:'pending'
+});
+
+if(error)return alert(error.message);
+
+alert('درخواست برداشت ثبت شد.');
+await loadHistory();
+}
+
+async function loadProfit(){
+const {data,error}=await db
+.from('daily_profit')
+.select('*')
+.eq('user_id',currentUser.id)
+.order('profit_date',{ascending:false});
+
+if(error){
+document.getElementById('profitList').innerText=error.message;
+return;
+}
+
+document.getElementById('profitList').innerHTML=
+data.length ? data.map(x=>`
+<div class="box">
+تاریخ: ${x.profit_date}<br>
+مبلغ: ${x.amount} ${x.asset || 'USDT'}<br>
+${x.description || ''}
+</div>
+`).join('') : 'هنوز سودی ثبت نشده است.';
 }
 
 async function loadHistory(){
-
 const [d,w]=await Promise.all([
-
-sb.from(TABLES.deposits)
-.select('*')
-.eq('user_id',currentUser.id)
-.order('created_at',{ascending:false})
-.limit(100),
-
-sb.from(TABLES.withdrawals)
-.select('*')
-.eq('user_id',currentUser.id)
-.order('created_at',{ascending:false})
-.limit(100)
-
+db.from('deposits').select('*').eq('user_id',currentUser.id),
+db.from('withdrawals').select('*').eq('user_id',currentUser.id)
 ]);
 
-if(d.error) throw d.error;
-if(w.error) throw w.error;
+let html='';
 
-$('depositsRows').replaceChildren();
-$('withdrawalsRows').replaceChildren();
-
-(d.data||[]).forEach(x=>{
-
-row($('depositsRows'),[
-money(x.amount),
-x.tx_hash||x.transaction_hash||'',
-x.status||'نامشخص',
-date(x.created_at)
-]);
-
+if(!d.error){
+d.data.forEach(x=>{
+html+=`<p>واریز: ${x.amount} USDT | ${x.status}</p>`;
 });
-
-(w.data||[]).forEach(x=>{
-
-row($('withdrawalsRows'),[
-money(x.amount),
-x.wallet_address||x.destination_address||'',
-x.status||'نامشخص',
-date(x.created_at)
-]);
-
-});
-
 }
 
-async function loadAdmin(){
-
-if(!isAdmin) return;
-
-const [d,w]=await Promise.all([
-
-sb.from(TABLES.deposits)
-.select('*')
-.order('created_at',{ascending:false})
-.limit(100),
-
-sb.from(TABLES.withdrawals)
-.select('*')
-.order('created_at',{ascending:false})
-.limit(100)
-
-]);
-
-if(d.error) throw d.error;
-if(w.error) throw w.error;
-
-$('adminDeposits').replaceChildren();
-$('adminWithdrawals').replaceChildren();
-
-(d.data||[]).forEach(x=>{
-
-row($('adminDeposits'),[
-x.user_id,
-money(x.amount),
-x.tx_hash||x.transaction_hash||'',
-x.status||'نامشخص'
-]);
-
+if(!w.error){
+w.data.forEach(x=>{
+html+=`<p>برداشت: ${x.amount} USDT | ${x.status}</p>`;
 });
-
-(w.data||[]).forEach(x=>{
-
-row($('adminWithdrawals'),[
-x.user_id,
-money(x.amount),
-x.wallet_address||x.destination_address||'',
-x.status||'نامشخص'
-]);
-
-});
-
 }
 
-async function refresh(){
-
-await loadProfile();
-
-await loadHistory();
-
-if(isAdmin) await loadAdmin();
-
+document.getElementById('history').innerHTML=
+html || 'تاریخچه‌ای وجود ندارد.';
 }
 
-async function enter(user){
-
-currentUser=user;
-
-isAdmin=(user.email||'').toLowerCase()
-===ADMIN_EMAIL.toLowerCase();
-
-$('auth').classList.add('hidden');
-
-$('app').classList.remove('hidden');
-
-$('userbar').classList.remove('hidden');
-
-$('who').textContent=user.email||user.id;
-
-$('adminTab').classList.toggle('hidden',!isAdmin);
-
-await refresh();
-
-}
-
-$('loginBtn').onclick=async()=>{
-
-clearMsg();
-
-const {data,error}=await sb.auth.signInWithPassword({
-
-email:$('loginEmail').value.trim(),
-
-password:$('loginPass').value
-
+function showPage(page){
+['deposit','withdraw','profit','profile'].forEach(x=>{
+document.getElementById(x).classList.add('hidden');
 });
-
-if(error) return msg(error.message,true);
-
-try{
-
-await enter(data.user);
-
-}catch(e){
-
-msg('خطا در دریافت اطلاعات دیتابیس: '+e.message,true);
-
+document.getElementById(page).classList.remove('hidden');
 }
 
-};
-
-$('signupBtn').onclick=async()=>{
-
-clearMsg();
-
-const {data,error}=await sb.auth.signUp({
-
-email:$('signupEmail').value.trim(),
-
-password:$('signupPass').value
-
-});
-
-if(error) return msg(error.message,true);
-
-msg(
-data.session
-? 'ثبت‌نام انجام شد.'
-: 'ثبت‌نام انجام شد. ایمیل خود را برای تأیید بررسی کنید.'
+function copyWallet(){
+navigator.clipboard.writeText(
+document.getElementById('wallet').value
 );
-
-if(data.user && data.session){
-
-try{
-
-await enter(data.user);
-
-}catch(e){
-
-msg(e.message,true);
-
+alert('آدرس کپی شد');
 }
 
-}
-
-};
-
-$('logout').onclick=async()=>{
-
-await sb.auth.signOut();
-
+async function logout(){
+await db.auth.signOut();
 location.reload();
-
-};
-
-$('copyWallet').onclick=async()=>{
-
-try{
-
-await navigator.clipboard.writeText(WALLET);
-
-msg('آدرس کیف پول کپی شد.');
-
-}catch(e){
-
-msg('آدرس را دستی کپی کنید.',true);
-
 }
 
-};
-
-$('depositBtn').onclick=async()=>{
-
-clearMsg();
-
-const amount=Number($('depAmount').value);
-
-const tx_hash=$('depHash').value.trim();
-
-if(!(amount>0) ||
-!/^0x[a-fA-F0-9]{64}$/.test(tx_hash)){
-
-return msg(
-'مبلغ معتبر و هش تراکنش ۶۶ کاراکتری وارد کنید.',
-true
-);
-
-}
-
-const {error}=await sb.rpc('submit_deposit',{
-
-p_amount:amount,
-
-p_tx_hash:tx_hash,
-
-p_network:'BEP20'
-
-});
-
-if(error){
-
-return msg(
-'تابع امن submit_deposit هنوز در Supabase ساخته نشده است: '
-+error.message,
-true
-);
-
-}
-
-msg('درخواست واریز ثبت شد و در انتظار بررسی است.');
-
-$('depAmount').value='';
-
-$('depHash').value='';
-
-await refresh();
-
-};
-
-$('withdrawBtn').onclick=async()=>{
-
-clearMsg();
-
-const amount=Number($('wdAmount').value);
-
-const wallet_address=$('wdAddress').value.trim();
-
-if(!(amount>0) ||
-!/^0x[a-fA-F0-9]{40}$/.test(wallet_address)){
-
-return msg(
-'مبلغ معتبر و آدرس مقصد BEP20 وارد کنید.',
-true
-);
-
-}
-
-const {error}=await sb.rpc('submit_withdrawal',{
-
-p_amount:amount,
-
-p_wallet_address:wallet_address,
-
-p_network:'BEP20'
-
-});
-
-if(error){
-
-return msg(
-'تابع امن submit_withdrawal هنوز در Supabase ساخته نشده است: '
-+error.message,
-true
-);
-
-}
-
-msg('درخواست برداشت ثبت شد و در انتظار بررسی مدیر است.');
-
-$('wdAmount').value='';
-
-$('wdAddress').value='';
-
-await refresh();
-
-};
-
-$('refreshAdmin').onclick=async()=>{
-
-try{
-
-await loadAdmin();
-
-msg('اطلاعات پنل مدیریت به‌روزرسانی شد.');
-
-}catch(e){
-
-msg('خطای پنل مدیریت: '+e.message,true);
-
-}
-
-};
-
-sb.auth.getSession().then(async({data,error})=>{
-
-if(error) return msg(error.message,true);
-
+db.auth.getSession().then(async ({data})=>{
 if(data.session){
-
-try{
-
-await enter(data.session.user);
-
-}catch(e){
-
-msg('خطا در دریافت اطلاعات: '+e.message,true);
-
+currentUser=data.session.user;
+await start();
 }
-
-}
-
 });
-
-sb.auth.onAuthStateChange(async(event,session)=>{
-
-if(event==='SIGNED_OUT'){
-
-location.reload();
-
-}
-
-});
-
-})();
 </script>
 
 </body>
