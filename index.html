@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<!DOCTYPE html><html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crypto Capital</title>
-<style>
+<title>Crypto Capital</title><style>
 body {
   margin:0;
   background:#0b1020;
@@ -33,14 +31,15 @@ header {
 }
 h2 {color:#f0bd55}
 p {line-height:2;color:#cbd5e1}
-.address {
-  direction:ltr;
-  text-align:center;
+input {
+  width:100%;
+  box-sizing:border-box;
+  padding:14px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #263451;
   background:#080e1c;
-  padding:15px;
-  border-radius:10px;
-  overflow-wrap:anywhere;
-  font-size:13px;
+  color:white;
 }
 button {
   background:#f0bd55;
@@ -50,69 +49,72 @@ button {
   padding:13px 20px;
   font-weight:bold;
   cursor:pointer;
-  margin-top:12px;
+  margin:8px 3px;
 }
+.hidden {display:none}
 .notice {
   color:#ffd98a;
   font-size:12px;
 }
-</style>
-</head>
-<body>
-
-<header>CRYPTO CAPITAL</header>
-
-<div class="container">
-
-<div class="box">
-<h2>به Crypto Capital خوش آمدید</h2>
-<p>
-سامانه نمایش اطلاعات واریز ارز دیجیتال
-</p>
-</div>
-
-<div class="box">
-<h2>واریز USDT</h2>
-<p>شبکه انتخابی: BNB Smart Chain (BEP20)</p>
-
-<div class="address" id="wallet">
-0x3ceaa206e71b3a03d7596be8c9214e36361aae11
-</div>
-
-<button onclick="copyWallet()">کپی آدرس کیف پول</button>
-<p id="message"></p>
-
-<p class="notice">
-فقط تتر BEP20 ارسال کنید. قبل از انتقال، آدرس و شبکه را بررسی کنید.
-</p>
-</div>
-
-<div class="box">
-<h2>داشبورد کاربر</h2>
-<p>موجودی حساب: هنوز متصل نشده</p>
-<p>تاریخچه تراکنش‌ها: هنوز فعال نشده</p>
-<p>درخواست برداشت: هنوز فعال نشده</p>
-</div>
-
-<div class="box">
-<h2>امنیت حساب</h2>
-<p>
-برای فعال‌سازی حساب کاربران، ثبت تراکنش‌ها و برداشت واقعی، اتصال به سرور امن و پایگاه داده لازم است.
-</p>
-</div>
-
-</div>
-
-<script>
-function copyWallet() {
- const address = document.getElementById("wallet").innerText.trim();
- navigator.clipboard.writeText(address).then(function() {
-   document.getElementById("message").innerText = "آدرس کپی شد";
- }).catch(function() {
-   document.getElementById("message").innerText = "لطفاً آدرس را دستی کپی کنید";
- });
+.address {
+  direction:ltr;
+  text-align:center;
+  background:#080e1c;
+  padding:15px;
+  border-radius:10px;
+  overflow-wrap:anywhere;
+  font-size:13px;
 }
-</script>
+</style></head><body><header>CRYPTO CAPITAL</header><div class="container"><div class="box">
+<h2>به Crypto Capital خوش آمدید</h2>
+<p>سامانه مدیریت حساب کاربران</p>
+</div><div class="box" id="authBox">
+<h2>ورود کاربران</h2><input id="email" type="email"
+placeholder="ایمیل">
 
-</body>
+<input id="password" type="password"
+placeholder="رمز عبور">
+
+<button onclick="registerUser(
+document.getElementById('email').value,
+document.getElementById('password').value
+)">ثبت نام</button>
+
+<button onclick="loginUser(
+document.getElementById('email').value,
+document.getElementById('password').value
+)">ورود</button>
+
+</div><div class="box hidden" id="dashboard"><h2>داشبورد اختصاصی</h2><p>ایمیل حساب:</p>
+<p id="userEmail"></p><p>وضعیت حساب: فعال</p><p>موجودی: در انتظار اتصال سیستم حسابداری</p><p>تاریخچه تراکنش‌ها: در انتظار راه‌اندازی</p><button onclick="logoutUser()">خروج از حساب</button>
+
+</div><div class="box">
+<h2>اطلاعات واریز</h2>
+<p>
+بخش واریز تا زمان راه‌اندازی سیستم امن تأیید تراکنش و حسابداری غیرفعال است.
+</p>
+<p class="notice">
+صرفاً از آدرس‌های تأییدشده و شبکه صحیح استفاده کنید.
+هیچ واریزی را بدون تأیید مستقل تراکنش معتبر تلقی نکنید.
+</p>
+</div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>
+async function refreshDashboard() {
+  const user = await checkUser();
+
+  if (user) {
+    document.getElementById("authBox").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    document.getElementById("userEmail").innerText = user.email;
+  } else {
+    document.getElementById("authBox").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+  }
+}
+
+refreshDashboard();
+
+supabaseClient.auth.onAuthStateChange(() => {
+  setTimeout(refreshDashboard, 0);
+});
+</script></body>
 </html>
