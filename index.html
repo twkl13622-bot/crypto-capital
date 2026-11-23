@@ -3,917 +3,1578 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Crypto Capital</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box}
-
-body{
-margin:0;
-background:#09111f;
-color:white;
-font-family:Tahoma,Arial;
-}
-
-header{
-background:#14243b;
-padding:22px;
-text-align:center;
-font-size:25px;
-color:#35df9b;
-font-weight:bold;
-}
-
-.container{
-max-width:600px;
-margin:auto;
-padding:15px;
-}
-
-.box{
-background:#17283f;
-padding:20px;
-border-radius:14px;
-margin-bottom:15px;
-}
-
+body{margin:0;background:#09111f;color:white;font-family:Tahoma,Arial}
+header{background:#14243b;padding:22px;text-align:center;font-size:25px;color:#35df9b;font-weight:bold}
+.container{max-width:760px;margin:auto;padding:15px}
+.box{background:#17283f;padding:20px;border-radius:14px;margin-bottom:15px}
 h3{color:#35df9b}
-
-input,select,button{
-width:100%;
-padding:15px;
-margin:7px 0;
-border:0;
-border-radius:9px;
-font-size:15px;
-}
-
-input,select{
-background:#263b55;
-color:white;
-}
-
-button{
-background:#12a875;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
+input,select,button{width:100%;padding:13px;margin:7px 0;border:0;border-radius:9px;font-size:15px}
+input,select{background:#263b55;color:white}
+button{background:#12a875;color:white;font-weight:bold;cursor:pointer}
 .gray{background:#354c69}
 .red{background:#bd4141}
-
+.blue{background:#2865a5}
 .hidden{display:none!important}
-
-.menu{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-}
-
-.balance{
-text-align:center;
-font-size:25px;
-color:#35df9b;
-padding:15px;
-}
-
-.item{
-background:#263b55;
-padding:13px;
-border-radius:9px;
-margin:9px 0;
-overflow-wrap:anywhere;
-}
-
-#message{
-display:none;
-padding:13px;
-background:#263b55;
-border-radius:9px;
-margin-bottom:12px;
-line-height:2;
-}
-
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.balance{text-align:center;font-size:24px;color:#35df9b;padding:12px}
+.item{background:#263b55;padding:13px;border-radius:9px;margin:9px 0;overflow-wrap:anywhere;line-height:2}
+#message{display:none;padding:13px;background:#263b55;border-radius:9px;margin-bottom:12px;line-height:2}
 small{color:#bdc9d8}
-
+hr{border:0;border-top:1px solid #40546c;margin:18px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row button{margin:3px 0}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;background:#354c69;font-size:12px}
+@media(max-width:480px){.row{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
-
 <header>CRYPTO CAPITAL</header>
-
 <div class="container">
-
 <div id="message"></div>
 
-<!-- AUTH -->
-
 <div id="auth" class="box">
-
 <h3>ورود / ثبت نام</h3>
-
-<input id="email" type="email"
-placeholder="ایمیل">
-
-<input id="password" type="password"
-placeholder="رمز عبور">
-
+<input id="email" type="email" placeholder="ایمیل">
+<input id="password" type="password" placeholder="رمز عبور">
 <button id="registerBtn">ثبت نام</button>
-
 <button class="gray" id="loginBtn">ورود</button>
-
 </div>
-
-<!-- APP -->
 
 <div id="app" class="hidden">
-
 <div class="box">
-
 <h3>داشبورد کاربری</h3>
-
 <p id="userEmail"></p>
-
-<div class="balance">
-حساب کاربری
-</div>
-
+<div class="balance">حساب کاربری</div>
 <p>سود ثبت شده:</p>
-
 <div id="totalProfit">0 USDT</div>
-
-<p>
-موجودی قابل برداشت فقط پس از تأیید تراکنش‌ها و محاسبه امن نمایش داده می‌شود.
-</p>
-
+<p>موجودی قابل برداشت پس از تأیید تراکنش‌ها محاسبه می‌شود.</p>
 </div>
 
 <div class="box menu">
-
 <button data-page="deposit">واریز</button>
-
 <button data-page="withdraw">برداشت</button>
-
 <button data-page="profit">سود روزانه</button>
-
 <button data-page="profile">پروفایل</button>
-
 <button data-page="history">تاریخچه</button>
-
+<button id="adminMenuBtn" class="blue hidden">پنل مدیریت</button>
 </div>
-
-<!-- DEPOSIT -->
 
 <div id="deposit" class="box hidden">
-
 <h3>واریز USDT</h3>
-
 <p>شبکه: BNB Smart Chain (BEP20)</p>
-
-<div class="item" id="walletAddress">
-0x3ceaa206e71b3a03d7596be8c9214e36361aae11
+<div class="item" id="walletAddress">0x3ceaa206e71b3a03d7596be8c9214e36361aae11</div>
+<button class="gray" id="copyBtn">کپی آدرس کیف پول</button>
+<input id="depAmount" type="number" min="0.01" placeholder="مبلغ واریز">
+<input id="depTx" placeholder="شناسه تراکنش TXID">
+<button id="depositBtn">ثبت درخواست واریز</button>
 </div>
-
-<button class="gray" id="copyBtn">
-کپی آدرس کیف پول
-</button>
-
-<input id="depAmount" type="number"
-min="0.01" step="0.01"
-placeholder="مبلغ واریز">
-
-<input id="depTx"
-placeholder="شناسه تراکنش TXID">
-
-<button id="depositBtn">
-ثبت درخواست واریز
-</button>
-
-<small>
-پس از انتقال، TXID را وارد کنید.
-ثبت درخواست به معنی تأیید پرداخت نیست.
-</small>
-
-</div>
-
-<!-- WITHDRAW -->
 
 <div id="withdraw" class="box hidden">
-
 <h3>درخواست برداشت</h3>
-
-<input id="withAmount" type="number"
-min="0.01" step="0.01"
-placeholder="مبلغ برداشت">
-
-<input id="withWallet"
-placeholder="آدرس کیف پول مقصد">
-
-<select id="withNetwork">
-<option value="BEP20">BEP20</option>
-</select>
-
-<button id="withdrawBtn">
-ثبت درخواست برداشت
-</button>
-
+<input id="withAmount" type="number" min="0.01" placeholder="مبلغ برداشت">
+<input id="withWallet" placeholder="آدرس کیف پول مقصد">
+<select id="withNetwork"><option value="BEP20">BEP20</option></select>
+<button id="withdrawBtn">ثبت درخواست برداشت</button>
 </div>
-
-<!-- PROFIT -->
 
 <div id="profit" class="box hidden">
-
 <h3>سود روزانه</h3>
-
 <div id="profitList"></div>
-
 <hr>
-
 <h3>درخواست برداشت سود</h3>
-
-<input id="profitAmount" type="number"
-min="0.01" step="0.01"
-placeholder="مبلغ برداشت سود">
-
-<input id="profitWallet"
-placeholder="آدرس کیف پول">
-
-<button id="profitWithdrawBtn">
-ثبت درخواست
-</button>
-
+<input id="profitAmount" type="number" min="0.01" placeholder="مبلغ برداشت سود">
+<input id="profitWallet" placeholder="آدرس کیف پول">
+<button id="profitWithdrawBtn">ثبت درخواست</button>
 </div>
-
-<!-- PROFILE -->
 
 <div id="profile" class="box hidden">
-
 <h3>پروفایل کاربری</h3>
-
 <p id="profileInfo"></p>
-
-<input id="username"
-placeholder="نام کاربری">
-
-<input id="profileWallet"
-placeholder="آدرس کیف پول شخصی">
-
-<select id="profileNetwork">
-<option value="BEP20">BEP20</option>
-</select>
-
-<button id="saveProfileBtn">
-ذخیره پروفایل
-</button>
-
-<button class="red" id="logoutBtn">
-خروج
-</button>
-
+<input id="username" placeholder="نام کاربری">
+<input id="profileWallet" placeholder="آدرس کیف پول شخصی">
+<select id="profileNetwork"><option value="BEP20">BEP20</option></select>
+<button id="saveProfileBtn">ذخیره پروفایل</button>
+<button class="red" id="logoutBtn">خروج</button>
 </div>
-
-<!-- HISTORY -->
 
 <div id="history" class="box hidden">
-
 <h3>تاریخچه واریز</h3>
 <div id="depositHistory"></div>
-
 <h3>تاریخچه برداشت</h3>
 <div id="withdrawHistory"></div>
-
 <h3>برداشت سود</h3>
 <div id="profitHistory"></div>
-
 </div>
 
+<div id="admin" class="box hidden">
+<h3>پنل مدیریت <span class="badge">ADMIN</span></h3>
+<button class="gray" id="refreshAdminBtn">به‌روزرسانی اطلاعات</button>
+<hr>
+<h3>کاربران</h3>
+<div id="adminUsers"></div>
+<hr>
+<h3>درخواست‌های واریز</h3>
+<div id="adminDeposits"></div>
+<hr>
+<h3>درخواست‌های برداشت</h3>
+<div id="adminWithdrawals"></div>
+<hr>
+<h3>برداشت سود</h3>
+<div id="adminProfitWithdrawals"></div>
+<hr>
+<h3>ثبت سود روزانه</h3>
+<select id="profitUser"><option value="">انتخاب کاربر</option></select>
+<input id="adminProfitAmount" type="number" min="0.000001" placeholder="مبلغ سود">
+<input id="adminProfitDate" type="date">
+<input id="adminProfitAsset" value="USDT" placeholder="دارایی">
+<input id="adminProfitDescription" placeholder="توضیحات">
+<button id="adminAddProfitBtn">ثبت سود برای کاربر</button>
 </div>
-
 </div>
-
+</div>
 <script>
-
 (function(){
-
 "use strict";
 
-// SUPABASE
+const URL='https://ofyiqwcfweowaszkddts.supabase.co';
+const KEY='sb_publishable_IbUYLvU5yRclImSaMvhwNQ__78E2TbT';
+const MAIN_WALLET='0x3ceaa206e71b3a03d7596be8c9214e36361aae11';
 
-const URL =
-'https://ofyiqwcfweowaszkddts.supabase.co';
-
-const KEY =
-'sb_publishable_IbUYLvU5yRclImSaMvhwNQ__78E2TbT';
-
-const MAIN_WALLET =
-'0x3ceaa206e71b3a03d7596be8c9214e36361aae11';
-
-let db=null;
-let currentUser=null;
-
-// ELEMENTS
-
-const $ = id => document.getElementById(id);
-
-// MESSAGE
+let db=null,currentUser=null,isAdmin=false;
+const $=id=>document.getElementById(id);
 
 function msg(text){
-
-const box=$('message');
-
-box.style.display='block';
-box.textContent=text;
-
-window.scrollTo(0,0);
-
+ const box=$('message');
+ box.style.display='block';
+ box.textContent=text;
+ window.scrollTo(0,0);
 }
-
-// HIDE MESSAGE
 
 function clearMsg(){
-
-$('message').style.display='none';
-
+ $('message').style.display='none';
 }
-
-// ERROR
 
 function showError(error){
-
-console.error(error);
-
-msg(error.message || 'خطای ناشناخته');
-
+ console.error(error);
+ msg(error.message||'خطای ناشناخته');
 }
 
-// PAGE
+function safeText(value){
+ return value===null||value===undefined?'':String(value);
+}
+
+function makeItem(parent,text){
+ const div=document.createElement('div');
+ div.className='item';
+ div.textContent=text;
+ parent.appendChild(div);
+ return div;
+}
+
+function addActionRow(parent,buttons){
+ const row=document.createElement('div');
+ row.className='row';
+
+ buttons.forEach(b=>{
+  const btn=document.createElement('button');
+  btn.textContent=b.label;
+  btn.className=b.className||'';
+  btn.addEventListener('click',b.onClick);
+  row.appendChild(btn);
+ });
+
+ parent.appendChild(row);
+}
 
 function page(name){
+ ['deposit','withdraw','profit','profile','history','admin']
+ .forEach(id=>$(id).classList.add('hidden'));
 
-['deposit','withdraw','profit','profile','history']
-.forEach(id => $(id).classList.add('hidden'));
+ $(name).classList.remove('hidden');
+ clearMsg();
 
-$(name).classList.remove('hidden');
-
-clearMsg();
-
-if(name==='profit') loadProfit();
-
-if(name==='history') loadHistory();
-
-if(name==='profile') loadProfile();
-
+ if(name==='profit')loadProfit();
+ if(name==='history')loadHistory();
+ if(name==='profile')loadProfile();
+ if(name==='admin'&&isAdmin)loadAdmin();
 }
-
-// REGISTER
 
 async function register(){
+ clearMsg();
 
-clearMsg();
+ const email=$('email').value.trim();
+ const password=$('password').value;
 
-const email=$('email').value.trim();
-const password=$('password').value;
+ if(!email||password.length<6){
+  msg('ایمیل و رمز حداقل ۶ کاراکتری وارد کنید');
+  return;
+ }
 
-if(!email || password.length<6){
+ const {data,error}=await db.auth.signUp({email,password});
 
-msg('ایمیل و رمز حداقل ۶ کاراکتری وارد کنید');
+ if(error){
+  showError(error);
+  return;
+ }
 
-return;
-
+ if(data.session){
+  currentUser=data.user;
+  await startApp();
+ }else{
+  msg('ثبت نام انجام شد. اگر تأیید ایمیل فعال است، ایمیل خود را تأیید کنید و سپس وارد شوید.');
+ }
 }
-
-const {data,error}=await db.auth.signUp({
-
-email,
-password
-
-});
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-if(data.session){
-
-currentUser=data.user;
-
-await startApp();
-
-}else{
-
-msg('ثبت نام انجام شد. اگر تأیید ایمیل فعال است، ایمیل خود را تأیید کنید و سپس وارد شوید.');
-
-}
-
-}
-
-// LOGIN
 
 async function login(){
+ clearMsg();
 
-clearMsg();
+ const email=$('email').value.trim();
+ const password=$('password').value;
 
-const email=$('email').value.trim();
-const password=$('password').value;
+ if(!email||!password){
+  msg('ایمیل و رمز عبور را وارد کنید');
+  return;
+ }
 
-if(!email || !password){
+ const {data,error}=await db.auth.signInWithPassword({
+  email,password
+ });
 
-msg('ایمیل و رمز عبور را وارد کنید');
+ if(error){
+  showError(error);
+  return;
+ }
 
-return;
-
+ currentUser=data.user;
+ await startApp();
 }
-
-const {data,error}=await db.auth.signInWithPassword({
-
-email,
-password
-
-});
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-currentUser=data.user;
-
-await startApp();
-
-}
-
-// START APP
-
-async function startApp(){
-
-$('auth').classList.add('hidden');
-
-$('app').classList.remove('hidden');
-
-$('userEmail').textContent=currentUser.email;
-
-await ensureProfile();
-
-page('deposit');
-
-}
-
-// CREATE PROFILE
 
 async function ensureProfile(){
+ const {data,error}=await db
+ .from('profiles')
+ .select('id')
+ .eq('id',currentUser.id)
+ .maybeSingle();
 
-const {data,error}=await db
-.from('profiles')
-.select('id')
-.eq('id',currentUser.id)
-.maybeSingle();
+ if(error)throw error;
 
-if(error){
+ if(!data){
+  const {error:insertError}=await db
+   .from('profiles')
+   .insert({
+    id:currentUser.id,
+    username:(currentUser.email||'user').split('@')[0],
+    email:currentUser.email,
+    role:'user'
+   });
 
-showError(error);
-return;
-
+  if(insertError)throw insertError;
+ }
 }
 
-if(!data){
+async function startApp(){
+ $('auth').classList.add('hidden');
+ $('app').classList.remove('hidden');
+ $('userEmail').textContent=currentUser.email||'';
 
-const {error:insertError}=await db
-.from('profiles')
-.insert({
+ await ensureProfile();
 
-id:currentUser.id,
-username:currentUser.email.split('@')[0],
-role:'user'
+ const {data:profile,error}=await db
+  .from('profiles')
+  .select('role')
+  .eq('id',currentUser.id)
+  .maybeSingle();
 
-});
+ if(error)throw error;
 
-if(insertError){
+ isAdmin=!!profile&&profile.role==='admin';
 
-showError(insertError);
+ $('adminMenuBtn').classList.toggle('hidden',!isAdmin);
 
+ page('deposit');
 }
-
-}
-
-}
-
-// PROFILE
 
 async function loadProfile(){
+ const {data,error}=await db
+  .from('profiles')
+  .select('username,wallet_address,wallet_network')
+  .eq('id',currentUser.id)
+  .maybeSingle();
 
-const {data,error}=await db
-.from('profiles')
-.select('username,wallet_address,wallet_network')
-.eq('id',currentUser.id)
-.maybeSingle();
+ if(error){
+  showError(error);
+  return;
+ }
 
-if(error){
+ if(data){
+  $('username').value=data.username||'';
+  $('profileWallet').value=data.wallet_address||'';
+  $('profileNetwork').value=data.wallet_network||'BEP20';
+ }
 
-showError(error);
-return;
-
+ $('profileInfo').textContent=currentUser.email||'';
 }
-
-if(data){
-
-$('username').value=data.username || '';
-
-$('profileWallet').value=data.wallet_address || '';
-
-$('profileNetwork').value=data.wallet_network || 'BEP20';
-
-}
-
-$('profileInfo').textContent=currentUser.email;
-
-}
-
-// SAVE PROFILE
 
 async function saveProfile(){
+ const {error}=await db
+  .from('profiles')
+  .update({
+   username:$('username').value.trim(),
+   wallet_address:$('profileWallet').value.trim(),
+   wallet_network:$('profileNetwork').value,
+   wallet_updated_at:new Date().toISOString()
+  })
+  .eq('id',currentUser.id);
 
-const username=$('username').value.trim();
+ if(error){
+  showError(error);
+  return;
+ }
 
-const wallet=$('profileWallet').value.trim();
-
-const network=$('profileNetwork').value;
-
-const {error}=await db
-.from('profiles')
-.update({
-
-username,
-wallet_address:wallet,
-wallet_network:network,
-wallet_updated_at:new Date().toISOString()
-
-})
-.eq('id',currentUser.id);
-
-if(error){
-
-showError(error);
-return;
-
+ msg('پروفایل با موفقیت ذخیره شد.');
 }
-
-msg('پروفایل با موفقیت ذخیره شد');
-
-}
-
-// DEPOSIT
 
 async function deposit(){
+ const amount=Number($('depAmount').value);
+ const tx=$('depTx').value.trim();
 
-const amount=Number($('depAmount').value);
+ if(!Number.isFinite(amount)||amount<=0||!tx){
+  msg('مبلغ و شناسه تراکنش را صحیح وارد کنید');
+  return;
+ }
 
-const tx=$('depTx').value.trim();
+ const {error}=await db.from('deposits').insert({
+  user_id:currentUser.id,
+  amount,
+  network:'BEP20',
+  tx_hash:tx,
+  status:'pending'
+ });
 
-if(!Number.isFinite(amount) || amount<=0 || !tx){
+ if(error){
+  showError(error);
+  return;
+ }
 
-msg('مبلغ و شناسه تراکنش را صحیح وارد کنید');
+ $('depAmount').value='';
+ $('depTx').value='';
 
-return;
-
+ msg('درخواست واریز ثبت شد و منتظر تأیید مدیر است.');
 }
-
-const {error}=await db
-.from('deposits')
-.insert({
-
-user_id:currentUser.id,
-amount,
-network:'BEP20',
-tx_hash:tx,
-status:'pending'
-
-});
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-$('depAmount').value='';
-$('depTx').value='';
-
-msg('درخواست واریز ثبت شد و منتظر تأیید مدیر است.');
-
-}
-
-// WITHDRAW
 
 async function withdraw(){
+ const amount=Number($('withAmount').value);
+ const wallet=$('withWallet').value.trim();
+ const network=$('withNetwork').value;
 
-const amount=Number($('withAmount').value);
+ if(!Number.isFinite(amount)||amount<=0||!wallet){
+  msg('اطلاعات برداشت را کامل وارد کنید');
+  return;
+ }
 
-const wallet=$('withWallet').value.trim();
+ const {error}=await db.from('withdrawals').insert({
+  user_id:currentUser.id,
+  amount,
+  wallet_address:wallet,
+  network,
+  status:'pending'
+ });
 
-const network=$('withNetwork').value;
+ if(error){
+  showError(error);
+  return;
+ }
 
-if(!Number.isFinite(amount) || amount<=0 || !wallet){
-
-msg('اطلاعات برداشت را کامل وارد کنید');
-
-return;
-
+ $('withAmount').value='';
+ msg('درخواست برداشت ثبت شد و منتظر بررسی مدیر است.');
 }
-
-const {error}=await db
-.from('withdrawals')
-.insert({
-
-user_id:currentUser.id,
-amount,
-wallet_address:wallet,
-network,
-status:'pending'
-
-});
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-$('withAmount').value='';
-
-msg('درخواست برداشت ثبت شد و منتظر بررسی مدیر است.');
-
-}
-
-// LOAD PROFIT
 
 async function loadProfit(){
+ const {data,error}=await db
+  .from('daily_profit')
+  .select('*')
+  .eq('user_id',currentUser.id)
+  .order('profit_date',{ascending:false});
 
-const {data,error}=await db
-.from('daily_profit')
-.select('*')
-.eq('user_id',currentUser.id)
-.order('profit_date',{ascending:false});
+ if(error){
+  showError(error);
+  return;
+ }
 
-if(error){
+ const list=$('profitList');
+ list.innerHTML='';
 
-showError(error);
-return;
+ let total=0;
 
+ (data||[]).forEach(item=>{
+  const amount=Number(item.amount)||0;
+  total+=amount;
+
+  makeItem(
+   list,
+   `${safeText(item.profit_date)} | ${amount} ${safeText(item.asset||'USDT')}${item.description?' | '+safeText(item.description):''}`
+  );
+ });
+
+ $('totalProfit').textContent=total.toFixed(2)+' USDT';
+
+ if(!data||!data.length){
+  list.textContent='هنوز سودی ثبت نشده است.';
+ }
 }
-
-const list=$('profitList');
-
-list.innerHTML='';
-
-let total=0;
-
-(data||[]).forEach(item=>{
-
-const amount=Number(item.amount)||0;
-
-total+=amount;
-
-const div=document.createElement('div');
-
-div.className='item';
-
-div.textContent=
-(item.profit_date || '')+
-' | '+
-amount+
-' '+
-(item.asset || 'USDT')+
-(item.description ? ' | '+item.description : '');
-
-list.appendChild(div);
-
-});
-
-$('totalProfit').textContent=
-total.toFixed(2)+' USDT';
-
-if(!data || data.length===0){
-
-list.textContent='هنوز سودی ثبت نشده است.';
-
-}
-
-}
-
-// PROFIT WITHDRAW
 
 async function profitWithdraw(){
+ const amount=Number($('profitAmount').value);
+ const wallet=$('profitWallet').value.trim();
 
-const amount=Number($('profitAmount').value);
+ if(!Number.isFinite(amount)||amount<=0||!wallet){
+  msg('مبلغ و آدرس کیف پول را وارد کنید');
+  return;
+ }
 
-const wallet=$('profitWallet').value.trim();
+ const {error}=await db.from('profit_withdrawals').insert({
+  user_id:currentUser.id,
+  amount,
+  asset:'USDT',
+  wallet_address:wallet,
+  network:'BEP20',
+  status:'pending'
+ });
 
-if(!Number.isFinite(amount) || amount<=0 || !wallet){
+ if(error){
+  showError(error);
+  return;
+ }
 
-msg('مبلغ و آدرس کیف پول را وارد کنید');
-
-return;
-
+ $('profitAmount').value='';
+ msg('درخواست برداشت سود ثبت شد و منتظر بررسی مدیر است.');
 }
-
-const {error}=await db
-.from('profit_withdrawals')
-.insert({
-
-user_id:currentUser.id,
-amount,
-asset:'USDT',
-wallet_address:wallet,
-network:'BEP20',
-status:'pending'
-
-});
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-$('profitAmount').value='';
-
-msg('درخواست برداشت سود ثبت شد و منتظر بررسی مدیر است.');
-
-}
-
-// HISTORY
 
 async function renderHistory(table,element){
+ const {data,error}=await db
+  .from(table)
+  .select('*')
+  .eq('user_id',currentUser.id)
+  .order('created_at',{ascending:false});
 
-const {data,error}=await db
-.from(table)
-.select('*')
-.eq('user_id',currentUser.id)
-.order('created_at',{ascending:false});
+ const target=$(element);
+ target.innerHTML='';
 
-const target=$(element);
+ if(error){
+  target.textContent=error.message;
+  return;
+ }
 
-target.innerHTML='';
+ if(!data||!data.length){
+  target.textContent='موردی ثبت نشده است.';
+  return;
+ }
 
-if(error){
-
-target.textContent=error.message;
-return;
-
-}
-
-if(!data || data.length===0){
-
-target.textContent='موردی ثبت نشده است.';
-return;
-
-}
-
-data.forEach(item=>{
-
-const div=document.createElement('div');
-
-div.className='item';
-
-div.textContent=
-Number(item.amount || 0)+
-' USDT | '+
-(item.network || '')+
-' | وضعیت: '+
-(item.status || 'pending')+
-' | '+
-(item.created_at || '');
-
-target.appendChild(div);
-
-});
-
+ data.forEach(item=>{
+  makeItem(
+   target,
+   `${Number(item.amount||0)} ${safeText(item.asset||'USDT')} | ${safeText(item.network)} | وضعیت: ${safeText(item.status||'pending')} | ${safeText(item.created_at)}`
+  );
+ });
 }
 
 async function loadHistory(){
-
-await renderHistory('deposits','depositHistory');
-
-await renderHistory('withdrawals','withdrawHistory');
-
-await renderHistory('profit_withdrawals','profitHistory');
-
+ await renderHistory('deposits','depositHistory');
+ await renderHistory('withdrawals','withdrawHistory');
+ await renderHistory('profit_withdrawals','profitHistory');
 }
-
-// COPY WALLET
 
 async function copyWallet(){
-
-try{
-
-await navigator.clipboard.writeText(MAIN_WALLET);
-
-msg('آدرس کیف پول کپی شد');
-
-}catch(e){
-
-msg('کپی خودکار ممکن نیست. آدرس را دستی کپی کنید.');
-
+ try{
+  await navigator.clipboard.writeText(MAIN_WALLET);
+  msg('آدرس کیف پول کپی شد.');
+ }catch(e){
+  msg('کپی خودکار ممکن نیست. آدرس را دستی کپی کنید.');
+ }
 }
-
-}
-
-// LOGOUT
 
 async function logout(){
+ await db.auth.signOut();
+ location.reload();
+}
+  <!-- WITHDRAW SECTION -->
+<section class="box" id="withdrawSection">
 
-await db.auth.signOut();
+  <h2>💸 درخواست برداشت</h2>
+
+  <label>مبلغ برداشت (USDT)</label>
+  <input
+    type="number"
+    id="withdrawAmount"
+    placeholder="مبلغ به تتر"
+    min="1"
+  >
+
+  <label>آدرس کیف پول مقصد</label>
+  <input
+    type="text"
+    id="withdrawWallet"
+    placeholder="آدرس کیف پول BEP20"
+  >
+
+  <label>شبکه انتقال</label>
+  <select id="withdrawNetwork">
+    <option value="BEP20">BEP20 (BSC)</option>
+  </select>
+
+  <button onclick="submitWithdrawal()">
+    ثبت درخواست برداشت
+  </button>
+
+  <p id="withdrawMessage"></p>
+
+</section>
+
+<script>
+async function submitWithdrawal() {
+
+  const message = document.getElementById("withdrawMessage");
+  const amount = Number(
+    document.getElementById("withdrawAmount").value
+  );
+
+  const wallet = document.getElementById("withdrawWallet")
+    .value.trim();
+
+  const network = document.getElementById("withdrawNetwork")
+    .value;
+
+  if (!window.supabaseClient) {
+    message.innerText = "خطا در اتصال دیتابیس";
+    return;
+  }
+
+  if (!amount || amount <= 0 || !wallet) {
+    message.innerText = "اطلاعات برداشت را کامل وارد کنید";
+    return;
+  }
+
+  try {
+
+    const { data: { user }, error: authError } =
+      await window.supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      message.innerText = "ابتدا وارد حساب کاربری شوید";
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from("withdrawals")
+      .insert([{
+        user_id: user.id,
+        amount: amount,
+        wallet_address: wallet,
+        network: network,
+        status: "pending"
+      }]);
+
+    if (error) throw error;
+
+    message.innerText =
+      "درخواست برداشت با موفقیت ثبت شد و در انتظار بررسی است.";
+
+    document.getElementById("withdrawAmount").value = "";
+    document.getElementById("withdrawWallet").value = "";
+
+  } catch (error) {
+
+    console.error(error);
+    message.innerText = "خطا در ثبت درخواست برداشت";
+
+  }
+}
+</script>
+<!-- ADMIN WITHDRAWAL PANEL -->
+
+<section id="adminPanel" class="box" style="display:none">
+
+<h2>👑 پنل مدیریت</h2>
+
+<h3>مدیریت درخواست‌های برداشت</h3>
+
+<button onclick="loadWithdrawals()">
+🔄 بروزرسانی درخواست‌ها
+</button>
+
+<div id="withdrawalList">
+در حال بارگذاری...
+</div>
+
+</section>
+
+<script>
+
+async function checkAdmin() {
+
+  const {data:{user}} = await db.auth.getUser();
+
+  if (!user) return;
+
+  const {data:profile,error} = await db
+    .from("profiles")
+    .select("role")
+    .eq("id",user.id)
+    .single();
+
+  if (!error && profile && profile.role === "admin") {
+
+    document.getElementById("adminPanel").style.display="block";
+
+    loadWithdrawals();
+
+  }
+
+}
+
+
+async function loadWithdrawals() {
+
+  const box = document.getElementById("withdrawalList");
+
+  box.innerHTML = "در حال دریافت اطلاعات...";
+
+  const {data,error} = await db
+    .from("withdrawals")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error) {
+
+    box.innerHTML="خطا در دریافت درخواست‌ها";
+
+    console.error(error);
+
+    return;
+  }
+
+  if(!data || data.length===0) {
+
+    box.innerHTML="درخواستی ثبت نشده است";
+
+    return;
+  }
+
+  box.innerHTML="";
+
+  data.forEach(item => {
+
+    box.innerHTML += `
+
+    <div style="
+      border:1px solid #777;
+      padding:15px;
+      margin:12px 0;
+      border-radius:10px;
+      direction:rtl;
+      overflow-wrap:anywhere;
+    ">
+
+      <p>شناسه: ${item.id}</p>
+
+      <p>کاربر: ${item.user_id}</p>
+
+      <p>مبلغ: ${item.amount} USDT</p>
+
+      <p>شبکه: ${item.network}</p>
+
+      <p>کیف پول: ${item.wallet_address}</p>
+
+      <p>وضعیت: ${item.status}</p>
+
+      ${
+        item.status === "pending" ? `
+
+        <button onclick="updateWithdrawal('${item.id}','approved')">
+        ✅ تأیید درخواست
+        </button>
+
+        <button onclick="updateWithdrawal('${item.id}','rejected')">
+        ❌ رد درخواست
+        </button>
+
+        ` : ""
+      }
+
+    </div>
+
+    `;
+
+  });
+
+}
+
+
+async function updateWithdrawal(id,status) {
+
+  const confirmAction = confirm(
+    status === "approved"
+    ? "آیا درخواست را تأیید می‌کنید؟"
+    : "آیا درخواست را رد می‌کنید؟"
+  );
+
+  if(!confirmAction) return;
+
+  const {error} = await db
+    .from("withdrawals")
+    .update({status:status})
+    .eq("id",id)
+    .eq("status","pending");
+
+  if(error) {
+
+    alert("خطا در تغییر وضعیت");
+
+    console.error(error);
+
+    return;
+  }
+
+  alert("وضعیت درخواست تغییر کرد");
+
+  loadWithdrawals();
+
+}
+
+checkAdmin();
+
+</script>
+<!-- USER PROFILE -->
+
+<section class="box" id="profileSection">
+
+<h2>👤 پروفایل کاربری</h2>
+
+<div id="profileInfo">
+در حال دریافت اطلاعات...
+</div>
+
+<button onclick="logoutUser()">
+🚪 خروج از حساب
+</button>
+
+</section>
+
+<script>
+
+async function loadProfile() {
+
+const client = window.supabaseClient;
+
+if (!client) return;
+
+const {data:{user},error} =
+await client.auth.getUser();
+
+const box = document.getElementById("profileInfo");
+
+if(error || !user) {
+
+box.innerHTML = "لطفاً وارد حساب شوید";
+
+return;
+
+}
+
+box.innerHTML = `
+<p>📧 ایمیل: ${user.email || "-"}</p>
+<p>🆔 شناسه کاربر:</p>
+<p style="overflow-wrap:anywhere">${user.id}</p>
+<p>✅ وضعیت: حساب فعال</p>
+`;
+
+}
+
+async function logoutUser() {
+
+const client = window.supabaseClient;
+
+if(!client) return;
+
+const {error} = await client.auth.signOut();
+
+if(error) {
+
+alert("خطا در خروج");
+
+return;
+
+}
 
 location.reload();
 
 }
 
-// BUTTON EVENTS
-
-function setupButtons(){
-
-$('registerBtn').addEventListener('click',register);
-
-$('loginBtn').addEventListener('click',login);
-
-$('saveProfileBtn').addEventListener('click',saveProfile);
-
-$('depositBtn').addEventListener('click',deposit);
-
-$('withdrawBtn').addEventListener('click',withdraw);
-
-$('profitWithdrawBtn').addEventListener('click',profitWithdraw);
-
-$('copyBtn').addEventListener('click',copyWallet);
-
-$('logoutBtn').addEventListener('click',logout);
-
-document.querySelectorAll('[data-page]')
-.forEach(button=>{
-
-button.addEventListener('click',()=>{
-
-page(button.dataset.page);
-
-});
-
-});
-
-}
-
-// INIT
-
-async function init(){
-
-if(!window.supabase){
-
-msg('کتابخانه Supabase بارگذاری نشده است. اینترنت را بررسی کنید.');
-
-return;
-
-}
-
-db=window.supabase.createClient(URL,KEY);
-
-setupButtons();
-
-const {data,error}=await db.auth.getSession();
-
-if(error){
-
-showError(error);
-return;
-
-}
-
-if(data.session){
-
-currentUser=data.session.user;
-
-await startApp();
-
-}
-
-}
-
-init().catch(showError);
-
-})();
+loadProfile();
 
 </script>
+<!-- DAILY PROFIT SECTION -->
 
-</body>
-</html>
+<section class="box" id="dailyProfitSection">
+
+<h2>📈 سود روزانه من</h2>
+
+<div>
+  <h3>مجموع سود</h3>
+  <h2 id="totalProfit">0 USDT</h2>
+</div>
+
+<hr>
+
+<h3>تاریخچه سودها</h3>
+
+<div id="profitHistory">
+در حال دریافت اطلاعات...
+</div>
+
+</section>
+
+<script>
+
+async function loadDailyProfit() {
+
+  const box = document.getElementById("profitHistory");
+
+  if (!db) {
+    box.innerText = "اتصال دیتابیس برقرار نیست";
+    return;
+  }
+
+  const {data:{user},error:authError} =
+    await db.auth.getUser();
+
+  if (authError || !user) {
+    box.innerText = "ابتدا وارد حساب کاربری شوید";
+    return;
+  }
+
+  const {data,error} = await db
+    .from("daily_profit")
+    .select("*")
+    .eq("user_id",user.id)
+    .order("profit_date",{ascending:false});
+
+  if(error) {
+    box.innerText = "خطا در دریافت سودها";
+    console.error(error);
+    return;
+  }
+
+  let total = 0;
+
+  box.innerHTML = "";
+
+  if(!data || data.length === 0) {
+    box.innerText = "هنوز سودی برای شما ثبت نشده است";
+    document.getElementById("totalProfit").innerText = "0 USDT";
+    return;
+  }
+
+  data.forEach(item => {
+
+    total += Number(item.amount);
+
+    const card = document.createElement("div");
+
+    card.style.cssText =
+      "border:1px solid #777;padding:12px;margin:10px 0;border-radius:10px";
+
+    const title = document.createElement("h4");
+    title.textContent = Number(item.amount) + " " + item.asset;
+
+    const date = document.createElement("p");
+    date.textContent = "تاریخ: " + item.profit_date;
+
+    const description = document.createElement("p");
+    description.textContent = item.description || "";
+
+    card.append(title,date,description);
+    box.appendChild(card);
+
+  });
+
+  document.getElementById("totalProfit").innerText =
+    total.toFixed(4) + " USDT";
+
+}
+
+loadDailyProfit();
+
+</script>
+<!-- DEPOSIT HISTORY -->
+
+<section class="box" id="depositHistorySection">
+
+<h2>💰 تاریخچه واریزها</h2>
+
+<div id="depositHistory">
+در حال دریافت اطلاعات...
+</div>
+
+</section>
+
+<script>
+
+async function loadDepositHistory() {
+
+const client = window.supabaseClient ||
+(typeof db !== "undefined" ? db : null);
+
+const box = document.getElementById("depositHistory");
+
+if (!client) {
+box.innerText = "اتصال دیتابیس برقرار نیست";
+return;
+}
+
+const {data:{user},error:authError} =
+await client.auth.getUser();
+
+if (authError || !user) {
+box.innerText = "ابتدا وارد حساب شوید";
+return;
+}
+
+const {data,error} = await client
+.from("deposits")
+.select("*")
+.eq("user_id",user.id)
+.order("created_at",{ascending:false});
+
+if(error) {
+box.innerText = "خطا در دریافت تاریخچه واریز";
+console.error(error);
+return;
+}
+
+if(!data || data.length===0) {
+box.innerText = "هنوز واریزی ثبت نشده است";
+return;
+}
+
+box.innerHTML = "";
+
+data.forEach(item => {
+
+const card = document.createElement("div");
+
+card.style.cssText =
+"border:1px solid #777;padding:15px;margin:12px 0;border-radius:10px;overflow-wrap:anywhere";
+
+const title = document.createElement("h3");
+title.textContent = "مبلغ: " + item.amount + " USDT";
+
+const network = document.createElement("p");
+network.textContent = "شبکه: " + item.network;
+
+const hash = document.createElement("p");
+hash.textContent = "TX Hash: " + (item.tx_hash || "-");
+
+const status = document.createElement("p");
+status.textContent = "وضعیت: " + item.status;
+
+const date = document.createElement("p");
+date.textContent = "تاریخ: " + (item.created_at || "-");
+
+card.append(title,network,hash,status,date);
+
+box.appendChild(card);
+
+});
+
+}
+
+loadDepositHistory();
+
+</script>
+<!-- ADMIN DEPOSIT MANAGEMENT -->
+
+<section class="box" id="adminDepositPanel" style="display:none">
+
+<h2>👑 مدیریت واریز کاربران</h2>
+
+<button onclick="loadAdminDeposits()">
+🔄 بروزرسانی
+</button>
+
+<div id="adminDepositList">
+در حال دریافت اطلاعات...
+</div>
+
+</section>
+
+<script>
+
+async function loadAdminDeposits() {
+
+const client = window.supabaseClient ||
+(typeof db !== "undefined" ? db : null);
+
+const box = document.getElementById("adminDepositList");
+
+if(!client) return;
+
+const {data:{user}} = await client.auth.getUser();
+
+if(!user || user.app_metadata?.role !== "admin") {
+document.getElementById("adminDepositPanel").style.display="none";
+return;
+}
+
+document.getElementById("adminDepositPanel").style.display="block";
+
+const {data,error} = await client
+.from("deposits")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error) {
+box.innerText="خطا در دریافت واریزها";
+console.error(error);
+return;
+}
+
+if(!data || data.length===0) {
+box.innerText="هنوز واریزی ثبت نشده است";
+return;
+}
+
+box.innerHTML="";
+
+data.forEach(item=>{
+
+const card=document.createElement("div");
+
+card.style.cssText=
+"border:1px solid #777;padding:15px;margin:12px 0;border-radius:10px;overflow-wrap:anywhere";
+
+const info=document.createElement("div");
+
+info.innerText=
+"کاربر: "+item.user_id+
+"\nمبلغ: "+item.amount+" USDT"+
+"\nشبکه: "+item.network+
+"\nTX Hash: "+(item.tx_hash || "-")+
+"\nوضعیت: "+item.status;
+
+card.appendChild(info);
+
+if(item.status==="pending") {
+
+["approved","rejected"].forEach(status=>{
+
+const btn=document.createElement("button");
+
+btn.textContent=
+status==="approved"?"✅ تأیید واریز":"❌ رد واریز";
+
+btn.onclick=()=>updateDepositStatus(item.id,status);
+
+card.appendChild(btn);
+
+});
+
+}
+
+box.appendChild(card);
+
+});
+
+}
+
+async function updateDepositStatus(id,status) {
+
+if(!confirm("آیا از تغییر وضعیت واریز مطمئن هستید؟")) return;
+
+const client = window.supabaseClient
+  <!-- USER BALANCE SYSTEM -->
+
+<section class="box" id="balanceSection">
+
+<h2>💰 دارایی و موجودی من</h2>
+
+<div style="padding:15px;background:#123;border-radius:12px">
+
+<p>مجموع واریزهای تأییدشده</p>
+<h3 id="totalDeposits">0 USDT</h3>
+
+<p>مجموع سود ثبت‌شده</p>
+<h3 id="totalProfits">0 USDT</h3>
+
+<p>مجموع برداشت‌های تأییدشده</p>
+<h3 id="totalWithdrawals">0 USDT</h3>
+
+<hr>
+
+<p>موجودی محاسبه‌شده</p>
+
+<h1 id="finalBalance">0 USDT</h1>
+
+</div>
+
+<button onclick="loadUserBalance()">
+🔄 بروزرسانی موجودی
+</button>
+
+</section>
+
+<script>
+
+async function loadUserBalance() {
+
+const client = window.supabaseClient ||
+(typeof db !== "undefined" ? db : null);
+
+if(!client) {
+alert("اتصال دیتابیس برقرار نیست");
+return;
+}
+
+const {data:{user},error:authError} =
+await client.auth.getUser();
+
+if(authError || !user) {
+alert("ابتدا وارد حساب شوید");
+return;
+}
+
+try {
+
+const [deposits,profits,withdrawals] =
+await Promise.all([
+
+client.from("deposits")
+.select("amount,status")
+.eq("user_id",user.id),
+
+client.from("daily_profit")
+.select("amount")
+.eq("user_id",user.id),
+
+client.from("withdrawals")
+.select("amount,status")
+.eq("user_id",user.id)
+
+]);
+
+if(deposits.error) throw deposits.error;
+if(profits.error) throw profits.error;
+if(withdrawals.error) throw withdrawals.error;
+
+const depositTotal =
+(deposits.data || [])
+.filter(x => x.status === "approved")
+.reduce((s,x)=>s+Number(x.amount),0);
+
+const profitTotal =
+(profits.data || [])
+.reduce((s,x)=>s+Number(x.amount),0);
+
+const withdrawalTotal =
+(withdrawals.data || [])
+.filter(x => x.status === "approved")
+.reduce((s,x)=>s+Number(x.amount),0);
+
+const balance =
+depositTotal + profitTotal - withdrawalTotal;
+
+document.getElementById("totalDeposits").innerText =
+depositTotal.toFixed(4)+" USDT";
+
+document.getElementById("totalProfits").innerText =
+profitTotal.toFixed(4)+" USDT";
+
+document.getElementById("totalWithdrawals").innerText =
+withdrawalTotal.toFixed(4)+" USDT";
+
+document.getElementById("finalBalance").innerText =
+balance.toFixed(4)+" USDT";
+
+} catch(error) {
+
+console.error(error);
+alert("خطا در دریافت موجودی");
+
+}
+
+}
+
+loadUserBalance();
+
+</script>
+<!-- ADMIN USER MANAGEMENT -->
+
+<section class="box" id="adminUsersPanel" style="display:none">
+
+<h2>👑 مدیریت کاربران</h2>
+
+<button onclick="loadAdminUsers()">
+🔄 بروزرسانی کاربران
+</button>
+
+<div id="adminUsersList">
+در حال دریافت کاربران...
+</div>
+
+</section>
+
+<script>
+
+async function loadAdminUsers() {
+
+const box = document.getElementById("adminUsersList");
+
+const {data:{user},error:authError} =
+await db.auth.getUser();
+
+if(authError || !user ||
+user.app_metadata?.role !== "admin") {
+
+document.getElementById("adminUsersPanel").style.display="none";
+
+return;
+
+}
+
+document.getElementById("adminUsersPanel").style.display="block";
+
+box.innerText="در حال دریافت اطلاعات...";
+
+const {data,error} = await db
+.from("profiles")
+.select("id,username,role,created_at,wallet_address")
+.order("created_at",{ascending:false});
+
+if(error) {
+
+box.innerText="خطا در دریافت کاربران";
+
+console.error(error);
+
+return;
+
+}
+
+if(!data || data.length===0) {
+
+box.innerText="کاربری ثبت نشده است";
+
+return;
+
+}
+
+box.innerHTML="";
+
+data.forEach(user=>{
+
+const card=document.createElement("div");
+
+card.style.cssText=
+"border:1px solid #777;padding:15px;margin:12px 0;border-radius:10px;overflow-wrap:anywhere";
+
+const info=document.createElement("div");
+
+info.innerText=
+"شناسه: "+user.id+
+"\nنام کاربری: "+(user.username || "-")+
+"\nنقش: "+(user.role || "user")+
+"\nآدرس کیف پول: "+(user.wallet_address || "ثبت نشده")+
+"\nتاریخ عضویت: "+(user.created_at || "-");
+
+card.appendChild(info);
+
+box.appendChild(card);
+
+});
+
+}
+
+loadAdminUsers();
+
+</script>
+<!-- ADMIN DAILY PROFIT MANAGEMENT -->
+
+<section class="box" id="adminProfitPanel" style="display:none">
+
+<h2>📈 ثبت سود روزانه کاربران</h2>
+
+<label>انتخاب کاربر</label>
+<select id="profitUser">
+<option value="">انتخاب کاربر</option>
+</select>
+
+<label>مبلغ سود (USDT)</label>
+<input type="number" id="profitAmount"
+placeholder="مثلاً 10" min="0.0001" step="any">
+
+<label>تاریخ سود</label>
+<input type="date" id="profitDate">
+
+<label>توضیحات</label>
+<input type="text" id="profitDescription"
+placeholder="توضیحات سود">
+
+<button onclick="saveUserProfit()">
+ثبت سود برای کاربر
+</button>
+
+<p id="profitAdminMessage"></p>
+
+</section>
+
+<script>
+
+async function initAdminProfit() {
+
+const {data:{user},error} = await db.auth.getUser();
+
+if(error || !user || user.app_metadata?.role !== "admin") {
+return;
+}
+
+document.getElementById("adminProfitPanel").style.display="block";
+
+document.getElementById("profitDate").value =
+new Date().toISOString().slice(0,10);
+
+const {data,error:profileError} = await db
+.from("profiles")
+.select("id,username,email");
+
+if(profileError) {
+console.error(profileError);
+return;
+}
+
+const select = document.getElementById("profitUser");
+
+select.innerHTML = '<option value="">انتخاب کاربر</option>';
+
+(data || []).forEach(item => {
+
+const option = document.createElement("option");
+
+option.value = item.id;
+
+option.textContent =
+(item.username || item.email || "کاربر") +
+" - " + item.id.slice(0,8);
+
+select.appendChild(option);
+
+});
+
+}
+
+async function saveUserProfit() {
+
+const message = document.getElementById("profitAdminMessage");
+
+const userId = document.getElementById("profitUser").value;
+
+const amount = Number(document.getElementById("profitAmount").value);
+
+const date = document.getElementById("profitDate").value;
+
+const description =
+document.getElementById("profitDescription").value.trim();
+
+if(!userId || !amount || amount <= 0 || !date) {
+
+message.innerText = "اطلاعات را کامل وارد کنید";
+
+return;
+
+}
+
+const {data:{user},error:authError} = await db.auth.getUser();
+
+if(authError || !user || user.app_metadata?.role !== "admin") {
+
+message.innerText = "دسترسی مدیر تأیید نشد";
+
+return;
+
+}
+
+const {error} = await db
+.from("daily_profit")
+.insert([{
+
+user_id: userId,
+amount: amount,
+profit_date: date,
+asset: "USDT",
+description: description
+
+}]);
+
+if(error) {
+
+console.error(error);
+
+message.innerText = "خطا در ثبت سود: " + error.message;
+
+return;
+
+}
+
+message.innerText = "✅ سود با موفقیت ثبت شد";
+
+document.getElementById("profitAmount").value = "";
+document.getElementById("profitDescription").value = "";
+
+}
+
+initAdminProfit();
+
+</script><!-- MAIN WALLET DEPOSIT SYSTEM -->
+
+<section class="box" id="mainDepositSection">
+
+<h2>💰 واریز به حساب</h2>
+
+<p>شبکه انتقال:</p>
+<h3>USDT - BEP20</h3>
+
+<p>حداقل مبلغ واریز: 100 USDT</p>
+
+<label>آدرس کیف پول اصلی:</label>
+
+<input
+id="mainWalletAddress"
+type="text"
+readonly
+value="0xE39fe26A8fe3E2611F0c8f6aCAFC74C3148248C2"
+>
+
+<button onclick="copyMainWallet()">
+📋 کپی آدرس کیف پول
+</button>
+
+<hr>
+
+<h3>ثبت واریز</h3>
+
+<label>مبلغ واریزی (USDT)</label>
+
+<input
+id="depositAmountNew"
+type="number"
+min="100"
+placeholder="حداقل 100"
+>
+
+<label>هش تراکنش (TX Hash)</label>
+
+<input
+id="depositHashNew"
+type="text"
+placeholder="Transaction Hash"
+>
+
+<button onclick="submitMainDeposit()">
+ثبت درخواست واریز
+</button>
+
+<p id="mainDepositMessage"></p>
+
+</section>
+
+<script>
+
+async function copyMainWallet() {
+
+const address =
+document.getElementById("mainWalletAddress").value;
+
+try {
+
+await navigator.clipboard.writeText(address);
+
+alert("آدرس کیف پول کپی شد");
+
+} catch(e) {
+
+alert("آدرس را دستی کپی کنید");
+
+}
+
+}
+
+async function submitMainDeposit() {
+
+const client = window.supabaseClient;
+
+const message =
+document.getElementById("mainDepositMessage");
+
+const amount =
+Number(document.getElementById("depositAmountNew").value);
+
+const hash =
+document.getElementById("depositHashNew").value.trim();
+
+if(!client) {
+message.innerText = "خطا در اتصال دیتابیس";
+return;
+}
+
+if(amount < 100 || !Number.isFinite(amount)) {
+message.innerText = "حداقل واریز 100 USDT است";
+return;
+}
+
+if(!hash) {
+message.innerText = "هش تراکنش را وارد کنید";
+return;
+}
+
+const {data:{user},error:authError} =
+await client.auth.getUser();
+
+if(authError || !user) {
+message.innerText = "ابتدا وارد حساب شوید";
+return;
+}
+
+const {error} = await client
+.from("deposits")
+.insert([{
+
+user_id: user.id,
+amount: amount,
+network: "BEP20",
+tx_hash: hash,
+status: "pending"
+
+}]);
+
+if(error) {
+
+console.error(error);
+
+message.innerText = "خطا در ثبت واریز: " + error.message;
+
+return;
+
+}
+
+message.innerText =
+"✅ درخواست واریز ثبت شد و منتظر تأیید مدیر است.";
+
+document.getElementById("depositAmountNew").value = "";
+document.getElementById("depositHashNew").value = "";
+
+}
+
+</script>
