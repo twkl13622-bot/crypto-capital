@@ -2,69 +2,52 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Crypto Capital</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
 body{
-margin:0;
-background:#0b1220;
-color:white;
+margin:0;background:#09111f;color:white;
 font-family:Tahoma,Arial;
 }
 header{
-background:#111c30;
-padding:20px;
-text-align:center;
-font-size:23px;
-color:#39d98a;
-font-weight:bold;
+background:#14243b;padding:22px;
+text-align:center;font-size:24px;
+color:#35df9b;font-weight:bold;
 }
-.container{
-max-width:600px;
-margin:20px auto;
-padding:15px;
-}
+.container{max-width:600px;margin:auto;padding:15px}
 .box{
-background:#17243a;
-padding:20px;
-border-radius:14px;
-margin-bottom:15px;
+background:#17283f;padding:20px;
+border-radius:14px;margin-bottom:15px;
 }
-h3{color:#39d98a}
-input,button{
-width:100%;
-padding:14px;
-margin:7px 0;
-border:0;
-border-radius:8px;
-font-size:15px;
+h3{color:#35df9b}
+input,button,select{
+width:100%;padding:14px;margin:7px 0;
+border:0;border-radius:8px;font-size:15px;
 }
-input{background:#26364e;color:white}
+input,select{background:#263b55;color:white}
 button{
-background:#16a36a;
-color:white;
-font-weight:bold;
-cursor:pointer;
+background:#12a875;color:white;
+font-weight:bold;cursor:pointer;
 }
-.secondary{background:#30445f}
-.danger{background:#bd4141}
-.menu{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-}
+button.gray{background:#354c69}
+button.red{background:#bd4141}
 .hidden{display:none}
-.balance{
-font-size:30px;
-color:#39d98a;
-text-align:center;
-padding:15px;
+.menu{
+display:grid;grid-template-columns:1fr 1fr;gap:8px
 }
-small{color:#aab9ca}
+.balance{
+text-align:center;font-size:27px;
+color:#35df9b;padding:15px
+}
+.item{
+background:#263b55;padding:12px;
+border-radius:8px;margin:8px 0;
+overflow-wrap:anywhere;
+}
+small{color:#bdc9d8}
 </style>
 </head>
 
@@ -75,257 +58,87 @@ small{color:#aab9ca}
 <div class="container">
 
 <div id="auth" class="box">
-<h3>ورود به حساب</h3>
+<h3>ورود / ثبت نام</h3>
 <input id="email" type="email" placeholder="ایمیل">
 <input id="password" type="password" placeholder="رمز عبور">
-<button onclick="login()">ورود</button>
-<button class="secondary" onclick="register()">ثبت نام</button>
+
+<button onclick="register()">ثبت نام</button>
+<button class="gray" onclick="login()">ورود</button>
 </div>
 
-<div id="dashboard" class="hidden">
+<div id="app" class="hidden">
 
 <div class="box">
-<h3>داشبورد کاربری</h3>
-<div id="userEmail"></div>
-<div class="balance">
-$<span id="balance">0</span>
-</div>
-<p style="text-align:center">موجودی حساب</p>
+<h3>داشبورد</h3>
+<p id="userEmail"></p>
+<div class="balance">حساب کاربری</div>
+<p>موجودی و سود فقط پس از ثبت و تأیید اطلاعات نمایش داده می‌شوند.</p>
 </div>
 
 <div class="box menu">
-<button onclick="showPage('deposit')">واریز</button>
-<button onclick="showPage('withdraw')">برداشت</button>
-<button onclick="showPage('profit')">سود روزانه</button>
-<button onclick="showPage('profile')">پروفایل</button>
+<button onclick="page('deposit')">واریز</button>
+<button onclick="page('withdraw')">برداشت</button>
+<button onclick="page('profit')">سود روزانه</button>
+<button onclick="page('profile')">پروفایل</button>
+<button onclick="page('history')">تاریخچه</button>
 </div>
 
 <div id="deposit" class="box hidden">
-<h3>واریز USDT - شبکه BEP20</h3>
-<p>آدرس کیف پول:</p>
-<input id="wallet" readonly value="0x3ceaa206e71b3a03d7596be8c9214e36361aae11">
-<button onclick="copyWallet()">کپی آدرس</button>
-<hr>
-<input id="depositAmount" type="number" placeholder="مبلغ واریز USDT">
-<input id="txHash" placeholder="شناسه تراکنش TXID">
-<button onclick="sendDeposit()">ثبت درخواست واریز</button>
-<small>پس از ارسال تراکنش، درخواست شما برای بررسی ثبت می‌شود.</small>
+<h3>واریز تتر USDT</h3>
+<p>شبکه: BEP20</p>
+<input id="mainWallet" readonly>
+<button class="gray" onclick="copyWallet()">کپی آدرس کیف پول</button>
+
+<input id="depAmount" type="number" placeholder="مبلغ واریز">
+<input id="depTx" placeholder="شناسه تراکنش TXID">
+
+<button onclick="deposit()">ثبت درخواست واریز</button>
 </div>
 
 <div id="withdraw" class="box hidden">
-<h3>درخواست برداشت</h3>
-<input id="withdrawAmount" type="number" placeholder="مبلغ برداشت">
-<input id="withdrawAddress" placeholder="آدرس کیف پول BEP20">
-<button onclick="sendWithdraw()">ثبت درخواست برداشت</button>
+<h3>برداشت وجه</h3>
+<input id="withAmount" type="number" placeholder="مبلغ برداشت">
+<input id="withWallet" placeholder="آدرس کیف پول شما">
+
+<select id="withNetwork">
+<option value="BEP20">BEP20</option>
+</select>
+
+<button onclick="withdraw()">ثبت درخواست برداشت</button>
 </div>
 
 <div id="profit" class="box hidden">
-<h3>گزارش سود روزانه</h3>
-<div id="profitList">در حال دریافت اطلاعات...</div>
+<h3>سود روزانه ثبت شده</h3>
+<div id="profitList"></div>
+
+<hr>
+
+<h3>درخواست برداشت سود</h3>
+<input id="profitAmount" type="number" placeholder="مبلغ برداشت سود">
+<input id="profitWallet" placeholder="آدرس کیف پول">
+<button onclick="profitWithdraw()">ثبت درخواست</button>
 </div>
 
 <div id="profile" class="box hidden">
-<h3>پروفایل</h3>
-<p id="profileEmail"></p>
-<button class="danger" onclick="logout()">خروج از حساب</button>
+<h3>پروفایل کاربری</h3>
+<p id="profileInfo"></p>
+<input id="username" placeholder="نام کاربری">
+<input id="profileWallet" placeholder="آدرس کیف پول شخصی">
+<button onclick="saveProfile()">ذخیره پروفایل</button>
+<button class="red" onclick="logout()">خروج</button>
 </div>
 
-<div class="box">
-<h3>وضعیت درخواست‌ها</h3>
-<div id="history">در حال بارگذاری...</div>
+<div id="history" class="box hidden">
+<h3>تاریخچه تراکنش‌ها</h3>
+<div id="historyList"></div>
 </div>
 
 </div>
 </div>
 
 <script>
-const SUPABASE_URL =
-'https://ofyiqwcfweowaszkddts.supabase.co';
+const URL='https://ofyiqwcfweowaszkddts.supabase.co';
 
-const SUPABASE_KEY =
-'sb_publishable_IbUYLvU5yRclImSaMvhwNQ__78E2TbT';
+const KEY='sb_publishable_IbUYLvU5yRclImSaMvhwNQ__78E2TbT';
 
-const db = supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-let currentUser = null;
-
-async function login(){
-const email=document.getElementById('email').value;
-const password=document.getElementById('password').value;
-
-const {data,error}=await db.auth.signInWithPassword({
-email,password
-});
-
-if(error)return alert(error.message);
-
-currentUser=data.user;
-await start();
-}
-
-async function register(){
-const email=document.getElementById('email').value;
-const password=document.getElementById('password').value;
-
-const {data,error}=await db.auth.signUp({
-email,password
-});
-
-if(error)return alert(error.message);
-
-alert('ثبت نام انجام شد. در صورت فعال بودن تأیید ایمیل، ایمیل خود را تأیید کنید.');
-}
-
-async function start(){
-document.getElementById('auth').classList.add('hidden');
-document.getElementById('dashboard').classList.remove('hidden');
-
-document.getElementById('userEmail').innerText=currentUser.email;
-document.getElementById('profileEmail').innerText=currentUser.email;
-
-await loadBalance();
-await loadHistory();
-await loadProfit();
-}
-
-async function loadBalance(){
-const {data,error}=await db
-.from('profiles')
-.select('balance')
-.eq('id',currentUser.id)
-.maybeSingle();
-
-if(!error && data){
-document.getElementById('balance').innerText=data.balance ?? 0;
-}
-}
-
-async function sendDeposit(){
-const amount=Number(document.getElementById('depositAmount').value);
-const tx=document.getElementById('txHash').value.trim();
-
-if(amount<=0 || !tx)return alert('اطلاعات را کامل وارد کنید');
-
-const {error}=await db.from('deposits').insert({
-user_id:currentUser.id,
-amount:amount,
-asset:'USDT',
-tx_hash:tx,
-status:'pending'
-});
-
-if(error)return alert(error.message);
-
-alert('درخواست واریز ثبت شد.');
-await loadHistory();
-}
-
-async function sendWithdraw(){
-const amount=Number(document.getElementById('withdrawAmount').value);
-const address=document.getElementById('withdrawAddress').value.trim();
-
-if(amount<=0 || !address)return alert('اطلاعات را کامل وارد کنید');
-
-const {data:profile,error:profileError}=await db
-.from('profiles')
-.select('balance')
-.eq('id',currentUser.id)
-.single();
-
-if(profileError)return alert(profileError.message);
-
-if(amount>Number(profile.balance))
-return alert('موجودی کافی نیست');
-
-const {error}=await db.from('withdrawals').insert({
-user_id:currentUser.id,
-amount:amount,
-asset:'USDT',
-wallet_address:address,
-status:'pending'
-});
-
-if(error)return alert(error.message);
-
-alert('درخواست برداشت ثبت شد.');
-await loadHistory();
-}
-
-async function loadProfit(){
-const {data,error}=await db
-.from('daily_profit')
-.select('*')
-.eq('user_id',currentUser.id)
-.order('profit_date',{ascending:false});
-
-if(error){
-document.getElementById('profitList').innerText=error.message;
-return;
-}
-
-document.getElementById('profitList').innerHTML=
-data.length ? data.map(x=>`
-<div class="box">
-تاریخ: ${x.profit_date}<br>
-مبلغ: ${x.amount} ${x.asset || 'USDT'}<br>
-${x.description || ''}
-</div>
-`).join('') : 'هنوز سودی ثبت نشده است.';
-}
-
-async function loadHistory(){
-const [d,w]=await Promise.all([
-db.from('deposits').select('*').eq('user_id',currentUser.id),
-db.from('withdrawals').select('*').eq('user_id',currentUser.id)
-]);
-
-let html='';
-
-if(!d.error){
-d.data.forEach(x=>{
-html+=`<p>واریز: ${x.amount} USDT | ${x.status}</p>`;
-});
-}
-
-if(!w.error){
-w.data.forEach(x=>{
-html+=`<p>برداشت: ${x.amount} USDT | ${x.status}</p>`;
-});
-}
-
-document.getElementById('history').innerHTML=
-html || 'تاریخچه‌ای وجود ندارد.';
-}
-
-function showPage(page){
-['deposit','withdraw','profit','profile'].forEach(x=>{
-document.getElementById(x).classList.add('hidden');
-});
-document.getElementById(page).classList.remove('hidden');
-}
-
-function copyWallet(){
-navigator.clipboard.writeText(
-document.getElementById('wallet').value
-);
-alert('آدرس کپی شد');
-}
-
-async function logout(){
-await db.auth.signOut();
-location.reload();
-}
-
-db.auth.getSession().then(async ({data})=>{
-if(data.session){
-currentUser=data.session.user;
-await start();
-}
-});
-</script>
-
-</body>
-</html>
+const db=supabase.create
